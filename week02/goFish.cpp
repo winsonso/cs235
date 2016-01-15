@@ -16,7 +16,7 @@
 
 #include <iostream>
 #include <fstream>
-#include "Set.h"
+#include "set.h"
 
 // #include <Set>
 #include "card.h"
