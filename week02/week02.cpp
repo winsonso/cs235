@@ -4,7 +4,7 @@
 *    Brother Helfrich, CS 235
 * Author:
 *    Br. Helfrich
-* Summary: 
+* Summary:
 *    This is a driver program to exercise the Set class.  When you
 *    submit your program, this should not be changed in any way.  That being
 *    said, you may need to modify this once or twice to get it to work.
@@ -87,7 +87,7 @@ int main()
       default:
          cout << "Unrecognized command, exiting...\n";
    }
-   
+
    return 0;
 }
 
@@ -127,7 +127,7 @@ void testSimple()
 void testFill()
 {
 #ifdef TEST2
-   // create 
+   // create
    cout << "Create an integer Set with the default constructor\n";
    Set <int> s1;
 
@@ -151,7 +151,7 @@ void testFill()
 
    // copy to s3;
    Set <int> s3(s1);
-   
+
    // display how big it is
    cout << "\tSize:  " << s3.size() << endl;
    cout << "\tEmpty? " << (s3.empty() ? "Yes" : "No") << endl;
@@ -200,7 +200,7 @@ void testFind()
 
    // make a copy of the set
    Set <string> s2(s1);
-   
+
    // look for an item in the set
    cout << "Find items in the set and delete.\n";
    cout << "\tEnter words to search for, type \"quit\" when done\n";
@@ -231,8 +231,8 @@ void testFind()
    cout << "The items in the set before the items were removed\n";
    for (it = s2.begin(); it != s2.end(); ++it)
       cout << "\t" << *it << endl;
-   
-   
+
+
 #endif // TEST3
 }
 
@@ -273,7 +273,7 @@ void testUnionIntersection()
          s2.insert(number);
    }
    while (number != 0.0);
-      
+
    // display intersection
    cout << "s1 && s2:\n";
    Set <float> sIntersection(s1 && s2);
@@ -309,7 +309,7 @@ void testConstIterator()
    const Set <int> s2(s1);
    for (SetConstIterator <int> it = s2.cbegin(); it != s2.cend(); ++it)
       cout << '\t' << *it << endl;
-   
+
 #endif // TEST5
 }
 

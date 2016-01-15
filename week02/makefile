@@ -1,13 +1,14 @@
 ###############################################################
 # Program:
 #     Week 02, SET
-#     Brother XXXX, CS235
+#     Brother Helfrich, CS235
 # Author:
-#     <your name here>
+#     Justin Waite & Winson So
 # Summary:
-#     <put a description here>
+#     This make file builds the week02 driver and goFish game
+#		to test the Set ADT.
 # Time:
-#     <how long did it take to complete this program>?
+#     It took about 3.5 hours to complete.
 ###############################################################
 
 ##############################################################
@@ -30,4 +31,4 @@ goFish.o: set.h goFish.h goFish.cpp card.h
 	g++ -c goFish.cpp
 
 card.o: card.h card.cpp
-	g++ -c card.cpp 
+	g++ -c card.cpp

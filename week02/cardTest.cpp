@@ -6,6 +6,7 @@ using namespace std;
 int main()
 {
    Card card;
+   
    cout << "> ";
    cin  >> card;
    cout << "Your card is: " << card << endl;
