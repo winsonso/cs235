@@ -23,7 +23,7 @@
 #include "goFish.h"
 using namespace std;
 
-// #define LINUX_LAB
+#define LINUX_LAB
 
 /**********************************************************************
  * GO FISH
