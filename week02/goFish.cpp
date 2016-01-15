@@ -36,7 +36,7 @@ void goFish()
 
    assert(readFile(cards));    // Make sure we read the file in.
 
-   cout << "We will play 5 rounds of Go Fish. Guess the card in the hand"
+   cout << "We will play 5 rounds of Go Fish.  Guess the card in the hand"
         << endl;
 
    // Begin the 5 rounds using a simple for-loop.
@@ -62,12 +62,12 @@ void goFish()
       }
    }
    cout << "You have " << matches << " matches!" << endl;
-   cout << "The remaining cards:";
+   cout << "The remaining cards: ";
 
    // Iterate through remaining cards.
    for (SetIterator<Card>it = cards.begin(); it != cards.end(); ++it)
    {
-      cout << " " << *it; // Display the card name
+      cout << (it == cards.begin() ? "" : ", ") << *it; // Display the card name
    }
    cout << endl;          // Close up shop!
 }

@@ -53,7 +53,10 @@ public:
 
    // destructor : free everything
    ~Set()        {
-      if (capac) delete[] data;
+      if (capac)
+      {
+         delete[] data;
+      }
    }
 
    // increases capacity of the data array by a given amount.
@@ -298,7 +301,15 @@ Set <T> ::Set(const Set <T> &rhs) throw(const char *)
    }
 
    // attempt to allocate
-   increaseCapacity(rhs.capac);
+   try
+   {
+      data = new T[rhs.capac];
+   }
+   catch(std::bad_alloc)
+   {
+      throw "ERROR: Unable to allocate buffer";
+   }
+
 
    // copy over the capacity and size
    assert(rhs.numItems >= 0 && rhs.numItems <= rhs.capac);
@@ -306,7 +317,10 @@ Set <T> ::Set(const Set <T> &rhs) throw(const char *)
    numItems = rhs.numItems;
 
    // copy the items over one at a time using the assignment operator
-   for (int i = 0; i < numItems; i++) data[i] = rhs.data[i];
+   for (int i = 0; i < numItems; i++)
+   {
+      data[i] = rhs.data[i];
+   }
 }
 
 /**********************************************
@@ -341,7 +355,10 @@ Set <T> ::Set(int capac) throw(const char *)
    this->numItems = 0;
 
    // initialize the container by calling the default constructor
-   for (int i = 0; i < capac; i++) data[i] = T();
+   for (int i = 0; i < capac; i++)
+   {
+      data[i] = T();
+   }
 }
 
 /***************************************************
@@ -406,8 +423,9 @@ Set<T>& Set<T>::operator = (const Set<T> &rhs)
       return *this;
    }
 
-   if (rhs.numItems > capac) {
-      increaseCapacity(numItems - capac);
+   if (rhs.numItems > capac)
+   {
+      increaseCapacity(rhs.numItems - capac);
    }
 
    numItems = rhs.numItems;
@@ -428,9 +446,16 @@ Set<T> Set<T>::operator || (const Set<T> &rhs)
 {
    Set tem;
 
-   for (int i = 0; i < numItems; i++) tem.insert(data[i]);
+   for (int i = 0; i < numItems; i++)
+   {
+      tem.insert(data[i]);
+   }
 
-   for (int k = 0; k < rhs.numItems; k++) tem.insert(rhs.data[k]);
+   for (int k = 0; k < rhs.numItems; k++)
+   {
+      tem.insert(rhs.data[k]);
+   }
+
    return tem;
 }
 
@@ -497,17 +522,24 @@ void Set <T> ::increaseCapacity(int incAmount) throw(const char *)
    {
       dataBuffer = new T[capac + incAmount];
    }
-   catch(std::bad_alloc) {
+   catch(std::bad_alloc)
+   {
       throw "ERROR: Unable to allocate buffer";
    }
 
    // change the m_capacity variable
-   capac = capac + incAmount;
+   capac += incAmount;
 
    // fill the dataBuffer with current data
-   for (int i = 0; i < numItems; i++) dataBuffer[i] = data[i];
+   for (int i = 0; i < numItems; i++)
+   {
+      dataBuffer[i] = data[i];
+   }
 
-   if (capac != incAmount) delete[] data;
+   if (capac != incAmount)
+   {
+      delete[] data;
+   }
 
    data = dataBuffer;
 }
