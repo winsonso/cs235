@@ -2,22 +2,22 @@
 * Header:
 *    Stack Container
 * Summary:
-*    This class contains the notion of a container: a bucket to hold
-*    data for the user. This is just a starting-point for more advanced
-*    constainers such as the vector, set, stack, queue, deque, and map
-*    which we will build later this semester.
+*    This class contains the the Stack ADT. A stack holds a list of any
+*    data type and has different methods for modifying the list. One can
+*    remove an item from the end of stack (pop), add an item to the
+*    container (push), return the item currently at the end of the
+*    stack (top) and etc.
 *
 *    This will contain the class definition of:
-*        Container         : A class that holds stuff
-*        ContainerIterator : An interator through Container
+*        Stack         : A class that holds a collection of data
 * Author
-*    Br. Helfrich
+*    Justin Waite & Winson So
 ************************************************************************/
 
 #ifndef STACK_H
 #define STACK_H
 
-#include <cassert> 
+#include <cassert>
 /************************************************
  * STACK
  * A class that holds stuff
@@ -26,15 +26,15 @@ template <class T>
 class Stack
 {
 public:
-   // default constructor : empty and kinda useless
+   // default constructor : empty
    Stack() : numItems(0), capac(0), data(0x00000000) {}
 
    // copy constructor : copy it
    Stack(const Stack & rhs) throw (const char *);
-   
+
    // non-default constructor : pre-allocate
    Stack(int capac) throw (const char *);
-   
+
    // destructor : free everything
    ~Stack()            {numItems = 0; }
    // is the container currently empty
@@ -45,7 +45,7 @@ public:
 
    // capacity
    int capacity() const {return capac;}
-   
+
    // push
    void push(const T &t) throw (const char*);
 
@@ -54,8 +54,8 @@ public:
 
    // top
    T top() throw (const char*);
-   
-      
+
+
 private:
    T * data;          // dynamically allocated array of T
    int numItems;      // how many items are currently in the Container?
@@ -68,7 +68,7 @@ template <class T>
 Stack <T> :: Stack(const Stack <T> & rhs) throw (const char *)
 {
    assert(rhs.capac >= 0);
-      
+
    // do nothing if there is nothing to do
    if (rhs.capac == 0)
    {
@@ -80,15 +80,15 @@ Stack <T> :: Stack(const Stack <T> & rhs) throw (const char *)
    // attempt to allocate
    try
    {
-     
+
       data = new T[rhs.capac];
-     
+
    }
    catch (std::bad_alloc)
    {
       throw "ERROR: Unable to allocate buffer";
    }
-   
+
    // copy over the capacity and size
    assert(rhs.numItems >= 0 && rhs.numItems <= rhs.capac);
    capac = rhs.capac;
@@ -111,7 +111,7 @@ template <class T>
 Stack <T> :: Stack(int capac) throw (const char *)
 {
    assert(capac >= 0);
-   
+
    // do nothing if there is nothing to do
    if (capac == 0)
    {
@@ -128,7 +128,7 @@ Stack <T> :: Stack(int capac) throw (const char *)
    catch (std::bad_alloc)
    {
       throw "ERROR: Unable to allocate buffer";
-   }    
+   }
    // copy over the stuff
    this->capac = capac;
    this->numItems = 0;
@@ -151,23 +151,23 @@ void Stack<T>::push(const T &t) throw (const char*)
    else if (capac <= numItems+1)
    {
       capac = capac*2;
-    try
-   {
-      //allocate the array
-      T*temp = data; 
-      data = new T[capac];
-      for(int i = 0; i < numItems ; i++)
-         data[i] = temp[i];
-      delete[] temp;
-   }
-   catch (std::bad_alloc)
-   {
-      throw "ERROR: Unable to allocate buffer";
-   }
-   }
-   data[numItems] = t ;
-   numItems++;
-   
+      try
+      {
+        //allocate the array
+        T*temp = data;
+        data = new T[capac];
+        for(int i = 0; i < numItems ; i++)
+        data[i] = temp[i];
+        delete[] temp;
+      }
+      catch (std::bad_alloc)
+      {
+        throw "ERROR: Unable to allocate a new buffer for Stack";
+      }
+    }
+    data[numItems] = t ;
+    numItems++;
+
 }
 /********************************
  *  Pop: Removes an item from the
@@ -190,7 +190,7 @@ try
  {
     std::cout << message;
  }
-   
+
 }
 
 /*********************************
@@ -213,4 +213,5 @@ T Stack<T>::top() throw (const char*)
     std::cout << message;
  }
 }
-#endif // CONTAINER_H
+
+#endif // STACK_H

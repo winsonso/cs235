@@ -14,6 +14,61 @@
 #include <cassert>     // for ASSERT
 #include "stack.h"     // for STACK
 using namespace std;
+int priority(char a)
+{
+   int temp;
+   if (a == '^')
+      temp = 3;
+   else if (a == '*' || a == '/')
+      temp = 2;
+   else if (a == '+' || a == '-')
+      temp = 1;
+   else
+      temp = -1;
+   return temp;
+
+}
+
+// Function to perform an operation and return output.
+bool hasHigherPrecedence(char op1, char op2)
+{
+	int op1Weight = priority(op1);
+	int op2Weight = priority(op2);
+
+	if (op1Weight > op2Weight)
+	{
+	   return true;
+	} else{
+	   return false;
+	}
+
+}
+
+//operand
+bool isOperand(char a)
+{
+   if(a >= '0' && a <= '9')
+      return true;
+   else if(a >= 'a' && a <= 'z')
+      return true;
+   else if(a >= 'A' && a <= 'Z')
+      return true;
+   else if(a == '.')
+      return true;
+   else if(a == ' ')
+      return true;
+   else
+      return false;
+}
+
+// Function to verify whether a character is operator symbol or not.
+bool isOperator(char C)
+{
+	if(C == '+' || C == '-' || C == '*' || C == '/' || C == '^' || C == '(' || C ==')')
+		return true;
+
+	return false;
+}
 
 /*****************************************************
  * CONVERT INFIX TO POSTFIX
@@ -35,7 +90,7 @@ void testInfixToPostfix()
 {
    string input;
    cout << "Enter an infix equation.  Type \"quit\" when done.\n";
-   
+
    do
    {
       // handle errors
@@ -44,7 +99,7 @@ void testInfixToPostfix()
          cin.clear();
          cin.ignore(256, '\n');
       }
-      
+
       // prompt for infix
       cout << "infix > ";
       getline(cin, input);
@@ -91,11 +146,11 @@ void testInfixToAssembly()
          cin.clear();
          cin.ignore(256, '\n');
       }
-      
+
       // prompt for infix
       cout << "infix > ";
       getline(cin, input);
-      
+
       // generate postfix
       if (input != "quit")
       {
@@ -104,5 +159,5 @@ void testInfixToAssembly()
       }
    }
    while (input != "quit");
-      
+
 }
