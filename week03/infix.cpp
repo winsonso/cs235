@@ -3,7 +3,7 @@
  *    Week 03, Stack
  *    Brother Helfrich, CS 235
  * Author:
- *    <your name here>
+ *    Justin Waite & Winson So
  * Summary:
  *    This program will implement the testInfixToPostfix()
  *    and testInfixToAssembly() functions
@@ -13,6 +13,9 @@
 #include <string>      // for STRING
 #include <cassert>     // for ASSERT
 #include "stack.h"     // for STACK
+#include <vector>
+#include "tokenizer.h"
+#include "infix.h"
 using namespace std;
 
 /*****************************************************
@@ -21,9 +24,131 @@ using namespace std;
  *****************************************************/
 string convertInfixToPostfix(const string & infix)
 {
-   string postfix;
+   string postfix = "";
+
+   Tokenizer tokenizer = Tokenizer(infix, ' ');
+   vector<string> tokens = tokenizer.getVector();
+   vector<string>::iterator vit;
+   Stack<string> operatorStack;
+
+   for (vit = tokens.begin(); vit != tokens.end(); ++vit)
+   {
+      // 1. Print operands as they come
+      if (!isOperator(*vit))
+      {
+         postfix += *vit + " ";
+      }
+
+      // 2. If the operator stack is empty, the top is ( or the current is (
+      // push to the operator stack.
+      else if (operatorStack.empty() || operatorStack.top() == "("
+         || *vit == "(")
+      {
+         operatorStack.push(*vit);
+      }
+
+      // 3. If a closing ) is found, print operators till ( is found.
+      else if (*vit == ")")
+      {
+         while (operatorStack.top() != "(")
+         {
+            postfix += operatorStack.top() + " ";
+            operatorStack.pop();
+         }
+         operatorStack.pop();
+      }
+
+      // 4. If the incomming operator has precendence over top, push it on.
+      else if (isOperator(operatorStack.top()) &&
+         compareOperators(*vit, operatorStack.top()) == 1)
+      {
+         operatorStack.push(*vit);
+      }
+
+      // 4. If the incomming operator has equal precendence as top, pop and
+      // print top, then push the new one on.
+      else if (isOperator(operatorStack.top()) &&
+         compareOperators(*vit, operatorStack.top()) == 0)
+      {
+         postfix += operatorStack.top() + " ";
+         operatorStack.pop();
+         operatorStack.push(*vit);
+      }
+
+      // 5. If the incomming operator has less precendence than top, pop and
+      // print top until an operator with less precendence is found. Push the
+      // new one on.
+      else if (isOperator(operatorStack.top()) &&
+         compareOperators(*vit, operatorStack.top()) == -1)
+      {
+         bool pushed = false;
+         while (!pushed)
+         {
+            postfix += operatorStack.top() + " ";
+            operatorStack.pop();
+
+            if (!isOperator(operatorStack.top()) ||
+               compareOperators(*vit, operatorStack.top()) == 1) //might be a problem
+            {
+               operatorStack.push(*vit);
+               pushed = true;
+            }
+         }
+      }
+   }
+
+   // 6. Print any remaining operators.
+   while (!operatorStack.empty())
+   {
+      postfix += operatorStack.top() + " ";
+      operatorStack.pop();
+   }
 
    return postfix;
+}
+
+/*****************************************************
+ * IS OPERATOR
+ * Evaluates a given string to determine if it is an
+ * operator.
+ *****************************************************/
+bool isOperator(string s)
+{
+   return (s == "+" || s == "-" || s == "*" || s == "/" || s == "(" || s == ")"
+      || s == "^");
+}
+
+/*****************************************************
+ * COMPARE OPERATORS
+ * Compares two operators to determine which one is
+ * of greatest precedence. Returns 1 if lhs is greater
+ * 0 if equal and -1 if rhs is greater.
+ *****************************************************/
+int compareOperators(string lhs, string rhs)
+{
+   if (lhs == rhs)
+      return 0;
+
+   if ((lhs == "+" && rhs == "-") || (rhs == "+" && lhs == "-") ||
+      (lhs == "*" && rhs == "/") || (rhs == "*" && lhs == "/"))
+      return 0;
+
+   if (lhs == "(")
+      return 1;
+
+   if (rhs == "(")
+      return -1;
+
+   if (lhs == "^")
+      return 1;
+
+   if (rhs == "^")
+      return -1;
+
+   if ((lhs == "*" || lhs == "/") && (rhs == "+" || rhs == "-"))
+      return 1;
+
+   return -1;
 }
 
 /*****************************************************
@@ -35,7 +160,7 @@ void testInfixToPostfix()
 {
    string input;
    cout << "Enter an infix equation.  Type \"quit\" when done.\n";
-   
+
    do
    {
       // handle errors
@@ -44,7 +169,7 @@ void testInfixToPostfix()
          cin.clear();
          cin.ignore(256, '\n');
       }
-      
+
       // prompt for infix
       cout << "infix > ";
       getline(cin, input);
@@ -91,11 +216,11 @@ void testInfixToAssembly()
          cin.clear();
          cin.ignore(256, '\n');
       }
-      
+
       // prompt for infix
       cout << "infix > ";
       getline(cin, input);
-      
+
       // generate postfix
       if (input != "quit")
       {
@@ -104,5 +229,5 @@ void testInfixToAssembly()
       }
    }
    while (input != "quit");
-      
+
 }

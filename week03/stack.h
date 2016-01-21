@@ -1,65 +1,67 @@
 /***********************************************************************
 * Header:
-*    Stack Container
+*    Stack
 * Summary:
-*    This class contains the notion of a container: a bucket to hold
-*    data for the user. This is just a starting-point for more advanced
-*    constainers such as the vector, set, stack, queue, deque, and map
-*    which we will build later this semester.
+*    This class is a stack container, which holds data in a "last in,
+*    first out" pattern. Data can only be accessed from the top of the
+*    stack.
 *
 *    This will contain the class definition of:
-*        Container         : A class that holds stuff
-*        ContainerIterator : An interator through Container
+*        Stack         : A container holding data in a "stack" pattern.
 * Author
-*    Br. Helfrich
+*    Justin Waite & Winson So
 ************************************************************************/
 
 #ifndef STACK_H
 #define STACK_H
 
-#include <cassert> 
+#include <cassert>
 /************************************************
  * STACK
- * A class that holds stuff
+ * A container that holds data in a "stack"
+ * pattern. The data can only be accessed from
+ * the top of the stack. Last in, first out.
  ***********************************************/
 template <class T>
 class Stack
 {
 public:
-   // default constructor : empty and kinda useless
-   Stack() : numItems(0), capac(0), data(0x00000000) {}
+   // default constructor
+   Stack() : numItems(0), capac(0), data(0x00000000) { }
 
-   // copy constructor : copy it
-   Stack(const Stack & rhs) throw (const char *);
-   
+   // copy constructor : copy the stack class
+   Stack(const Stack & rhs) throw (const char*);
+
    // non-default constructor : pre-allocate
-   Stack(int capac) throw (const char *);
-   
+   Stack(int capac) throw (const char*);
+
    // destructor : free everything
-   ~Stack()            {numItems = 0; }
-   // is the container currently empty
-   bool empty() const  { return numItems == 0;         }
+   ~Stack()
+   {
+      if (capac)
+         delete[] data;
+   }
 
-   // how many items are currently in the container?
-   int size() const    { return numItems;              }
+   // is the stack currently empty
+   bool empty() const  { return numItems == 0; }
 
-   // capacity
-   int capacity() const {return capac;}
-   
-   // push
+   // how many items are currently in the stack?
+   int size() const    { return numItems;      }
+
+   // push an item onto the stack
    void push(const T &t) throw (const char*);
 
-   // pop
+   // pop the top item off the stack
    void pop() throw (const char*);
 
-   // top
-   T top() throw (const char*);
-   
-      
+   // return the top item on the stack
+   T& top() const throw (const char*);
+
+
 private:
-   T * data;          // dynamically allocated array of T
+   T* data;           // dynamically allocated array of T
    int numItems;      // how many items are currently in the Container?
-   int capac;      // how many items can I put on the Container before full?
+   int capac;         // how many items can I put on the Container before full?
 };
 /*******************************************
  * STACK :: COPY CONSTRUCTOR
@@ -68,7 +70,7 @@ template <class T>
 Stack <T> :: Stack(const Stack <T> & rhs) throw (const char *)
 {
    assert(rhs.capac >= 0);
-      
+
    // do nothing if there is nothing to do
    if (rhs.capac == 0)
    {
@@ -80,15 +82,13 @@ Stack <T> :: Stack(const Stack <T> & rhs) throw (const char *)
    // attempt to allocate
    try
    {
-     
       data = new T[rhs.capac];
-     
    }
    catch (std::bad_alloc)
    {
       throw "ERROR: Unable to allocate buffer";
    }
-   
+
    // copy over the capacity and size
    assert(rhs.numItems >= 0 && rhs.numItems <= rhs.capac);
    capac = rhs.capac;
@@ -108,10 +108,10 @@ Stack <T> :: Stack(const Stack <T> & rhs) throw (const char *)
  * Preallocate the container to "capacity"
  **********************************************/
 template <class T>
-Stack <T> :: Stack(int capac) throw (const char *)
+Stack<T> :: Stack(int capac) throw (const char *)
 {
    assert(capac >= 0);
-   
+
    // do nothing if there is nothing to do
    if (capac == 0)
    {
@@ -128,89 +128,90 @@ Stack <T> :: Stack(int capac) throw (const char *)
    catch (std::bad_alloc)
    {
       throw "ERROR: Unable to allocate buffer";
-   }    
-   // copy over the stuff
+   }
+
+   // copy over the capacity and number of items
    this->capac = capac;
    this->numItems = 0;
 
-   // initialize the container by calling the default constructor
+   // initialize the container by calling the default constructor for each item
    for (int i = 0; i < capac; i++)
       data[i] = T();
 }
-/****************************************
- *  push: Adds an item to the container.
- ****************************************/
+
+/*********************************************
+ *  push: Adds an item to the top of the stack
+ ********************************************/
 template <class T>
-void Stack<T>::push(const T &t) throw (const char*)
+void Stack<T> :: push(const T &t) throw (const char*)
 {
    if(capac == 0 )
    {
       capac = 1;
       data = new T[capac];
    }
-   else if (capac <= numItems+1)
+   else if (capac <= numItems + 1)
    {
-      capac = capac*2;
-    try
-   {
-      //allocate the array
-      T*temp = data; 
-      data = new T[capac];
-      for(int i = 0; i < numItems ; i++)
-         data[i] = temp[i];
-      delete[] temp;
-   }
-   catch (std::bad_alloc)
-   {
-      throw "ERROR: Unable to allocate buffer";
-   }
+      capac = capac * 2;
+      try
+      {
+         //allocate the array
+         T* temp = data;
+         data = new T[capac];
+         for(int i = 0; i < numItems; i++)
+            data[i] = temp[i];
+         delete[] temp;
+      }
+      catch (std::bad_alloc)
+      {
+         throw "Unable to allocate a new buffer for Stack";
+      }
    }
    data[numItems] = t ;
    numItems++;
-   
-}
-/********************************
- *  Pop: Removes an item from the
- *       end of the stack, serving
- *       to reduce the size by one.
- ********************************/
-template <class T>
-void Stack<T>::pop() throw (const char*)
-{
-try
- {
-    if(this->empty())
-    {
-       throw"ERROR: Unable to pop from an empty Stack";
-    }
-    else
-    numItems--;
- }
- catch(char *message)
- {
-    std::cout << message;
- }
-   
 }
 
-/*********************************
- *  Top: Returns the item currently
- *       at the end of the stack.
- *********************************/
+/*********************************************
+ *  Pop: Removes an item from the top of the
+ *  stack, serving to reduce the size by one.
+ *********************************************/
 template <class T>
-T Stack<T>::top() throw (const char*)
+void Stack<T> :: pop() throw (const char*)
 {
- try
- {
-    if(this->empty())
-    {
-       throw"ERROR: Unable to reference the element from an empty Stack";
-    }
-    return data[numItems -1];
- }
- catch(char *message)
- {
-    std::cout << message;
- }
+   try
+   {
+      if(this->empty())
+      {
+         throw "ERROR: Unable to pop from an empty Stack";
+      }
+      else
+         numItems--;
+   }
+   catch(char* message)
+   {
+      std::cout << message << std::endl;
+   }
 }
+
+/*********************************************
+ *  Top: Returns the item currently at the top
+ *  of the stack.
+ *********************************************/
+template <class T>
+T& Stack<T> :: top() const throw (const char*)
+{
+   try
+   {
+      if(this->empty())
+      {
+         throw "ERROR: Unable to reference the element from an empty Stack";
+      }
+      return data[numItems - 1];
+   }
+   catch(char* message)
+   {
+      std::cout << message << std::endl;
+   }
+}
+
 #endif // CONTAINER_H
