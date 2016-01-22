@@ -38,8 +38,8 @@ public:
    // destructor : free everything
    ~Stack()
    {
-      if (capac)
-         delete[] data;
+      if (capac > 0)
+         delete [] data;
    }
 
    // is the stack currently empty
@@ -57,6 +57,8 @@ public:
    // return the top item on the stack
    T& top() const throw (const char*);
 
+   // assignment operator
+   Stack<T>& operator = (const Stack<T> &rhs);
 
 private:
    T* data;           // dynamically allocated array of T
@@ -137,6 +139,45 @@ Stack<T> :: Stack(int capac) throw (const char *)
    // initialize the container by calling the default constructor for each item
    for (int i = 0; i < capac; i++)
       data[i] = T();
+}
+
+/**********************************************
+ * STACK : ASSIGNMENT OPERATOR
+ * Sets the stack to a new copy of the rhs.
+ **********************************************/
+template <class T>
+Stack<T>& Stack<T> :: operator = (const Stack<T> &rhs)
+{
+   if (this == &rhs)
+   {
+      return *this;
+   }
+
+   if (rhs.numItems > capac)
+   {
+      try
+      {
+         //increase the capacity and allocate the array
+         T* temp = data;
+         data = new T[rhs.capac];
+         delete[] temp;
+         capac = rhs.capac;
+      }
+      catch (std::bad_alloc)
+      {
+         throw "Unable to allocate a new buffer for Stack";
+      }
+   }
+
+   numItems = rhs.numItems;
+
+   //copy over the items individually
+   for (int i = 0; i < numItems; i++)
+   {
+      data[i] = rhs.data[i];
+   }
+
+   return *this;
 }
 
 /*********************************************

@@ -25,83 +25,88 @@ using namespace std;
 string convertInfixToPostfix(const string & infix)
 {
    string postfix = "";
+   try {
+      Tokenizer tokenizer = Tokenizer(infix);
+      vector<string> tokens = tokenizer.getVector();
+      vector<string>::iterator vit;
+      Stack<string> operatorStack;
 
-   Tokenizer tokenizer = Tokenizer(infix, ' ');
-   vector<string> tokens = tokenizer.getVector();
-   vector<string>::iterator vit;
-   Stack<string> operatorStack;
-
-   for (vit = tokens.begin(); vit != tokens.end(); ++vit)
-   {
-      // 1. Print operands as they come
-      if (!isOperator(*vit))
+      for (vit = tokens.begin(); vit != tokens.end(); ++vit)
       {
-         postfix += *vit + " ";
-      }
-
-      // 2. If the operator stack is empty, the top is ( or the current is (
-      // push to the operator stack.
-      else if (operatorStack.empty() || operatorStack.top() == "("
-         || *vit == "(")
-      {
-         operatorStack.push(*vit);
-      }
-
-      // 3. If a closing ) is found, print operators till ( is found.
-      else if (*vit == ")")
-      {
-         while (operatorStack.top() != "(")
+         // 1. Print operands as they come
+         if (!isOperator(*vit))
          {
-            postfix += operatorStack.top() + " ";
+            postfix += " " + *vit;
+         }
+
+         // 2. If the operator stack is empty, the top is ( or the current is (
+         // push to the operator stack.
+         else if (operatorStack.empty() || operatorStack.top() == "("
+            || *vit == "(")
+         {
+            operatorStack.push(*vit);
+         }
+
+         // 3. If a closing ) is found, print operators till ( is found.
+         else if (*vit == ")")
+         {
+            while (operatorStack.top() != "(")
+            {
+               postfix += " " + operatorStack.top();
+               operatorStack.pop();
+            }
             operatorStack.pop();
          }
-         operatorStack.pop();
-      }
 
-      // 4. If the incomming operator has precendence over top, push it on.
-      else if (isOperator(operatorStack.top()) &&
-         compareOperators(*vit, operatorStack.top()) == 1)
-      {
-         operatorStack.push(*vit);
-      }
-
-      // 4. If the incomming operator has equal precendence as top, pop and
-      // print top, then push the new one on.
-      else if (isOperator(operatorStack.top()) &&
-         compareOperators(*vit, operatorStack.top()) == 0)
-      {
-         postfix += operatorStack.top() + " ";
-         operatorStack.pop();
-         operatorStack.push(*vit);
-      }
-
-      // 5. If the incomming operator has less precendence than top, pop and
-      // print top until an operator with less precendence is found. Push the
-      // new one on.
-      else if (isOperator(operatorStack.top()) &&
-         compareOperators(*vit, operatorStack.top()) == -1)
-      {
-         bool pushed = false;
-         while (!pushed)
+         // 4. If the incomming operator has precendence over top, push it on.
+         else if (isOperator(operatorStack.top()) &&
+            compareOperators(*vit, operatorStack.top()) == 1)
          {
-            postfix += operatorStack.top() + " ";
-            operatorStack.pop();
+            operatorStack.push(*vit);
+         }
 
-            if (!isOperator(operatorStack.top()) ||
-               compareOperators(*vit, operatorStack.top()) == 1) //might be a problem
+         // 4. If the incomming operator has equal precendence as top, pop and
+         // print top, then push the new one on.
+         else if (isOperator(operatorStack.top()) &&
+            compareOperators(*vit, operatorStack.top()) == 0)
+         {
+            postfix += " " + operatorStack.top();
+            operatorStack.pop();
+            operatorStack.push(*vit);
+         }
+
+         // 5. If the incomming operator has less precendence than top, pop and
+         // print top until an operator with less precendence is found. Push the
+         // new one on.
+         else if (isOperator(operatorStack.top()) &&
+            compareOperators(*vit, operatorStack.top()) == -1)
+         {
+            bool pushed = false;
+            while (!pushed)
             {
-               operatorStack.push(*vit);
-               pushed = true;
+               postfix += " " + operatorStack.top();
+               operatorStack.pop();
+
+               if (operatorStack.empty() || !isOperator(operatorStack.top()) ||
+                  compareOperators(*vit, operatorStack.top()) == 1) //might be a problem
+               {
+                  operatorStack.push(*vit);
+                  pushed = true;
+               }
             }
          }
       }
-   }
 
-   // 6. Print any remaining operators.
-   while (!operatorStack.empty())
+      // 6. Print any remaining operators.
+      while (!operatorStack.empty())
+      {
+         postfix += " " + operatorStack.top();
+         operatorStack.pop();
+      }
+   }
+   catch (char const* message)
    {
-      postfix += operatorStack.top() + " ";
-      operatorStack.pop();
+      cout << message << endl;
    }
 
    return postfix;
