@@ -121,7 +121,7 @@ string convertInfixToPostfix(const string & infix)
 bool isOperator(string s)
 {
    return (s == "+" || s == "-" || s == "*" || s == "/" || s == "(" || s == ")"
-      || s == "^");
+      || s == "^" || s == "%");
 }
 
 /*****************************************************
@@ -136,7 +136,9 @@ int compareOperators(string lhs, string rhs)
       return 0;
 
    if ((lhs == "+" && rhs == "-") || (rhs == "+" && lhs == "-") ||
-      (lhs == "*" && rhs == "/") || (rhs == "*" && lhs == "/"))
+      (lhs == "*" && rhs == "/") || (rhs == "*" && lhs == "/") ||
+      ((lhs == "*" || lhs == "/") && rhs == "%") ||
+      ((rhs == "*" || rhs == "/") && lhs == "%"))
       return 0;
 
    if (lhs == "(")
@@ -202,9 +204,10 @@ string getInstruction(char c)
       case '-': return "SUBTRACT";
       case '*': return "MULTIPLY";
       case '/': return "DIVIDE";
+      case '%': return "MODULUS";
       case '^': return "EXPONENT";
    }
-   return "IDK!";
+   return "";
 }
 
 /**********************************************
