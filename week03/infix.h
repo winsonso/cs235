@@ -33,6 +33,12 @@ bool isOperator(std::string s);
  *****************************************************/
 int compareOperators(std::string lhs, std::string rhs);
 
+/**********************************************
+ * GET INSTRUCTION
+ * Converts a char into an instruction string.
+ **********************************************/
+std::string getInstruction(char c);
+
 /*****************************************************
  * TEST INFIX TO ASSEMBLY
  * Prompt the user for infix text and display the

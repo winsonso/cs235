@@ -64,7 +64,43 @@ private:
    T* data;           // dynamically allocated array of T
    int numItems;      // how many items are currently in the Container?
    int capac;         // how many items can I put on the Container before full?
+
+   void resize(int newCapac);
 };
+
+/**********************************************
+ * STACK : RESIZE
+ * Attempts to resize the data array to
+ * newCapac. Will not downsize, only upsize.
+ **********************************************/
+template <class T>
+void Stack<T> :: resize(int newCapac)
+{
+   if (capac >= newCapac)
+      return;
+
+   // attempt to allocate
+   try
+   {
+      if (capac == 0)
+         data = new T[newCapac];
+      else
+      {
+         T* temp = data;
+         data = new T[newCapac];
+         for(int i = 0; i < numItems; i++)
+            data[i] = temp[i];
+         delete[] temp;
+      }
+
+      capac = newCapac;
+   }
+   catch (std::bad_alloc)
+   {
+      throw "ERROR: Unable to allocate buffer";
+   }
+}
+
 /*******************************************
  * STACK :: COPY CONSTRUCTOR
  *******************************************/
@@ -72,28 +108,19 @@ template <class T>
 Stack <T> :: Stack(const Stack <T> & rhs) throw (const char *)
 {
    assert(rhs.capac >= 0);
+   capac = numItems = 0;
 
    // do nothing if there is nothing to do
    if (rhs.capac == 0)
    {
-      capac = numItems = 0;
       data = 0x00000000;
       return;
    }
 
-   // attempt to allocate
-   try
-   {
-      data = new T[rhs.capac];
-   }
-   catch (std::bad_alloc)
-   {
-      throw "ERROR: Unable to allocate buffer";
-   }
+   resize(rhs.capac);
 
    // copy over the capacity and size
    assert(rhs.numItems >= 0 && rhs.numItems <= rhs.capac);
-   capac = rhs.capac;
    numItems = rhs.numItems;
 
    // copy the items over one at a time using the assignment operator
@@ -113,6 +140,7 @@ template <class T>
 Stack<T> :: Stack(int capac) throw (const char *)
 {
    assert(capac >= 0);
+   this->capac = 0;
 
    // do nothing if there is nothing to do
    if (capac == 0)
@@ -123,17 +151,9 @@ Stack<T> :: Stack(int capac) throw (const char *)
    }
 
    // attempt to allocate
-   try
-   {
-      data = new T[capac];
-   }
-   catch (std::bad_alloc)
-   {
-      throw "ERROR: Unable to allocate buffer";
-   }
+   resize(capac);
 
-   // copy over the capacity and number of items
-   this->capac = capac;
+   // Set number of items to zero
    this->numItems = 0;
 
    // initialize the container by calling the default constructor for each item
@@ -155,18 +175,7 @@ Stack<T>& Stack<T> :: operator = (const Stack<T> &rhs)
 
    if (rhs.numItems > capac)
    {
-      try
-      {
-         //increase the capacity and allocate the array
-         T* temp = data;
-         data = new T[rhs.capac];
-         delete[] temp;
-         capac = rhs.capac;
-      }
-      catch (std::bad_alloc)
-      {
-         throw "Unable to allocate a new buffer for Stack";
-      }
+      resize(rhs.capac);
    }
 
    numItems = rhs.numItems;
@@ -193,20 +202,7 @@ void Stack<T> :: push(const T &t) throw (const char*)
    }
    else if (capac <= numItems + 1)
    {
-      capac = capac * 2;
-      try
-      {
-         //allocate the array
-         T* temp = data;
-         data = new T[capac];
-         for(int i = 0; i < numItems; i++)
-            data[i] = temp[i];
-         delete[] temp;
-      }
-      catch (std::bad_alloc)
-      {
-         throw "Unable to allocate a new buffer for Stack";
-      }
+      resize(capac * 2);
    }
    data[numItems] = t ;
    numItems++;

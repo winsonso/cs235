@@ -14,6 +14,7 @@
 #include <cassert>     // for ASSERT
 #include "stack.h"     // for STACK
 #include <vector>
+#include <sstream>
 #include "tokenizer.h"
 #include "infix.h"
 using namespace std;
@@ -190,6 +191,23 @@ void testInfixToPostfix()
 }
 
 /**********************************************
+ * GET INSTRUCTION
+ * Converts a char into an instruction string.
+ **********************************************/
+string getInstruction(char c)
+{
+   switch (c)
+   {
+      case '+': return "ADD";
+      case '-': return "SUBTRACT";
+      case '*': return "MULTIPLY";
+      case '/': return "DIVIDE";
+      case '^': return "EXPONENT";
+   }
+   return "IDK!";
+}
+
+/**********************************************
  * CONVERT POSTFIX TO ASSEMBLY
  * Convert postfix "5 2 +" to assembly:
  *     LOAD 5
@@ -199,6 +217,48 @@ void testInfixToPostfix()
 string convertPostfixToAssembly(const string & postfix)
 {
    string assembly;
+   try
+   {
+      Tokenizer tokenizer = Tokenizer(postfix);
+      vector<string> tokens = tokenizer.getVector();
+
+      Stack<string> operands;
+      Stack<string> operators;
+
+      string lhs, rhs;
+      int valueNum = 0;
+
+      vector<string>::iterator vit;
+      for (vit = tokens.begin(); vit < tokens.end(); ++vit)
+      {
+         if (!isOperator(*vit))
+         {
+            operands.push(*vit);
+         }
+         else
+         {
+            rhs = operands.top();
+            operands.pop();
+
+            lhs = operands.top();
+            operands.pop();
+
+            cout << "\tLOAD " << lhs << endl;
+            string operatorString = *vit;
+            cout << "\t" << getInstruction(operatorString[0]) << " " << rhs
+                 << endl;
+            cout << "\tSTORE VALUE" << ++valueNum << endl;
+
+            ostringstream sstream;
+            sstream << "VALUE" << valueNum;
+            operands.push(sstream.str());
+         }
+      }
+   }
+   catch (char const* message)
+   {
+      cout << message << endl;
+   }
 
    return assembly;
 }
@@ -232,7 +292,5 @@ void testInfixToAssembly()
          string postfix = convertInfixToPostfix(input);
          cout << convertPostfixToAssembly(postfix);
       }
-   }
-   while (input != "quit");
-
+   } while (input != "quit");
 }
