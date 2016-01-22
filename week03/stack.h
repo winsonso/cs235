@@ -2,12 +2,14 @@
 * Header:
 *    Stack
 * Summary:
-*    This class is a stack container, which holds data in a "last in,
-*    first out" pattern. Data can only be accessed from the top of the
-*    stack.
+*    This class contains the the Stack ADT. A stack holds a list of any
+*    data type and has different methods for modifying the list. One can
+*    remove an item from the end of stack (pop), add an item to the
+*    container (push), return the item currently at the end of the
+*    stack (top) and etc.
 *
 *    This will contain the class definition of:
-*        Stack         : A container holding data in a "stack" pattern.
+*        Stack         : A class that holds a collection of data
 * Author
 *    Justin Waite & Winson So
 ************************************************************************/
@@ -145,7 +147,6 @@ Stack<T> :: Stack(int capac) throw (const char *)
    // do nothing if there is nothing to do
    if (capac == 0)
    {
-      this->capac = this->numItems = 0;
       this->data = 0x00000000;
       return;
    }
@@ -251,4 +252,4 @@ T& Stack<T> :: top() const throw (const char*)
    }
 }
 
-#endif // CONTAINER_H
+#endif // STACK_H
