@@ -11,7 +11,14 @@
 #     displayed in this project is a program to keep track
 #     of stock transactions.
 # Time:
-#     5 + ?
+#     11 Hours (9 on Queue and 2 on stocks)
+#     Most difficult part was dealing with some of the nuances
+#     of the Queue class such as the advantages and
+#     disadvantages of having the backNum be the index of the
+#     last item or keeping a buffer at the end for the backNum.
+#     For code simplicity and getting testBed to work, we went
+#     with having the backNum be the actual index of the last
+#     item.
 ###############################################################
 
 ##############################################################
@@ -36,5 +43,5 @@ week04.o: queue.h week04.cpp
 dollars.o: dollars.h dollars.cpp
 	g++ -c dollars.cpp
 
-stock.o: stock.h stock.cpp queue.h
+stock.o: stock.h stock.cpp queue.h portfolio.h
 	g++ -c stock.cpp

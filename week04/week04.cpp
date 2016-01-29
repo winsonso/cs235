@@ -4,7 +4,7 @@
 *    Brother Helfrich, CS 235
 * Author:
 *    Br. Helfrich
-* Summary: 
+* Summary:
 *    This is a driver program to exercise the Queue class.  When you
 *    submit your program, this should not be changed in any way.  That being
 *    said, you may need to modify this once or twice to get it to work.
@@ -112,7 +112,7 @@ void testSimple()
    catch (const char * sError)
    {
       cout << sError << endl;
-   }   
+   }
 #endif //TEST1
 }
 
@@ -154,8 +154,8 @@ void testPush()
    {
       cout << sError << endl;
    }
-   
-#endif // TEST2   
+
+#endif // TEST2
 }
 
 /*******************************************
@@ -208,7 +208,7 @@ void testPop()
                break;
             default:
                cout << "Invalid command\n";
-         }            
+         }
       }
       while (instruction != '!');
    }
@@ -279,6 +279,6 @@ void testErrors()
    {
       cout << "\tQueue::pop() error message correctly caught.\n"
            << "\t\"" << error << "\"\n";
-   }      
+   }
 #endif // TEST4
 }

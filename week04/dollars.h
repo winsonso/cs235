@@ -77,7 +77,7 @@ class Dollars
    bool operator <= (const Dollars & rhs) const
    {
       return !(*this > rhs);
-   }      
+   }
 
    // input and output
    friend std::ostream & operator << (std::ostream & out, const Dollars & rhs);

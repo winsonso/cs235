@@ -25,7 +25,7 @@
  * pattern. The data can only be accessed from
  * the first of the queue. First in, first out.
  ***********************************************/
- template <class T>
+template <class T>
 class Queue
 {
 public:
@@ -64,11 +64,10 @@ public:
    void pop() throw (const char*);
 
    // returns the item currently at the back of the queue
-   T & back() throw (const char*);
+   T & back() const throw (const char*);
 
    // returns the item currently at the front of the queue.
-   T & front() throw (const char*);
-
+   T & front() const throw (const char*);
 
    // assignment operator
    Queue<T>& operator = (const Queue<T> &rhs);
@@ -77,8 +76,8 @@ private:
    T* data;           // dynamically allocated array of T
    int numItems;      // how many items are currently in the Container?
    int capac;         // how many items can I put on the Container before full?
-   int frontNum;
-   int backNum;
+   int frontNum;      // index of the front item
+   int backNum;       // index of the back item
 
    void resize(int newCapac);
 };
@@ -104,12 +103,18 @@ void Queue<T> :: resize(int newCapac)
       {
          T* temp = data;
          data = new T[newCapac];
-         for(int i = 0; i < numItems; i++)
-            data[i] = temp[i];
+         if (numItems > 0)
+         {
+            int i = 0;
+            for(int k = frontNum; i < numItems; k = (k + 1) % capac)
+               data[i++] = temp[k];
+            backNum = i - 1;
+         }
          delete[] temp;
       }
 
       capac = newCapac;
+      frontNum = 0;
    }
    catch (std::bad_alloc)
    {
@@ -124,7 +129,7 @@ template <class T>
 Queue <T> :: Queue(const Queue <T> & rhs) throw (const char *)
 {
    assert(rhs.capac >= 0);
-   capac = numItems = 0;
+   capac = numItems = frontNum = backNum = 0;
 
    // do nothing if there is nothing to do
    if (rhs.capac == 0)
@@ -137,14 +142,16 @@ Queue <T> :: Queue(const Queue <T> & rhs) throw (const char *)
 
    // copy over the capacity and size
    assert(rhs.numItems >= 0 && rhs.numItems <= rhs.capac);
-  numItems = rhs.numItems;
+   numItems = rhs.numItems;
+   backNum = rhs.numItems - 1;
 
    // copy the items over one at a time using the assignment operator
-   for (int i = 0; i < numItems; i++)
-      data[i] = rhs.data[i];
+   int i = 0;
+   for (int k = rhs.frontNum; i < numItems; k = (k + 1) % rhs.capac)
+      data[i++] = rhs.data[k];
 
    // the rest needs to be filled with the default value for T
-   for (int i = numItems; i < capac; i++)
+   for (int i = backNum + 1; i < capac; i++)
       data[i] = T();
 }
 
@@ -168,11 +175,10 @@ Queue<T> :: Queue(int capac) throw (const char *)
    // attempt to allocate
    resize(capac);
 
-   // copy over the stuff
-   this->capac = capac;
-
-   // Set number of items to zero
-    this->numItems = 0;
+   // set defaults
+   numItems = 0;
+   frontNum = 0;
+   backNum = 0;
 
    // initialize the container by calling the default constructor for each item
    for (int i = 0; i < capac; i++)
@@ -197,6 +203,8 @@ Queue<T>& Queue<T> :: operator = (const Queue<T> &rhs)
    }
 
    numItems = rhs.numItems;
+   frontNum = rhs.frontNum;
+   backNum = rhs.backNum;
 
    //copy over the items individually
    for (int i = 0; i < numItems; i++)
@@ -213,39 +221,30 @@ Queue<T>& Queue<T> :: operator = (const Queue<T> &rhs)
 template <class T>
 void Queue<T> :: push(const T &t) throw (const char*)
 {
-  try
-  {
-   if(capac == 0 )
+   try
    {
-      capac = 1;
-      data = new T[capac];
-   }
-   // if we dont have enough space, do stuff
-   else if (numItems == capac)
-   {
-      T*temp = data;
-      capac = capac * 2;
-      data = new T[capac];
-            int i = 0;
-      for (int k = frontNum; k < numItems; k = (k + 1) % (capac / 2))
+      if(capac == 0 )
       {
-         data[i] = temp[k];
-         i++;
+         capac = 2;
+         data = new T[capac];
       }
-      delete [] temp;
-       frontNum = 0;
-       backNum = numItems;
-   }
 
-   //here comes the insert part
-   data[backNum] = t;
-   backNum = (backNum + 1) % capac;
-   numItems++;
- }
- catch (std::bad_alloc)
- {
-   throw "ERROR: Unable to allocate a new buffer for queue";
- }
+      // if we dont have enough space, resize to double capacity.
+      else if (numItems == capac)
+      {
+         resize(capac * 2);
+      }
+
+      //here comes the insert part
+      if (numItems > 0)
+         backNum = (backNum + 1) % capac;
+      data[backNum] = t;
+      numItems++;
+   }
+   catch (std::bad_alloc)
+   {
+      throw "ERROR: Unable to allocate a new buffer for queue";
+   }
 
 }
 
@@ -256,64 +255,42 @@ void Queue<T> :: push(const T &t) throw (const char*)
 template <class T>
 void Queue<T> :: pop() throw (const char*)
 {
-   try
+   if(empty())
    {
-      if(this->empty())
-      {
-         throw "ERROR: attempting to pop from an empty queue";
-      }
-      else
-         frontNum = (frontNum + 1) % capac;
-         numItems--;
+      throw "ERROR: attempting to pop from an empty queue";
    }
-   catch(std::bad_alloc)
-   {
-     throw "ERROR: attempting to pop from an empty queue";
-   }
+
+   if (numItems - 1 > 0)
+      frontNum = (frontNum + 1) % capac;
+   numItems--;
 }
 
 /*********************************************
  *  Back: Returns the item currently at the
- *       back of the queue
+ *  back of the queue
  *********************************************/
 template <class T>
-T& Queue<T> :: back() throw (const char*)
+T& Queue<T> :: back() const throw (const char*)
 {
- try
-   {
-      if(this->empty())
-      {
-         throw "ERROR: attempting to access an item in an empty queue";
-      }
-      if (backNum == 0)
-         return data[capac - 1];
-      else
-         return data[backNum - 1];
-   }
-   catch(std::bad_alloc)
+   if(this->empty())
    {
       throw "ERROR: attempting to access an item in an empty queue";
    }
+
+   return data[backNum];
 }
 
 /*********************************************
  *  Front: Returns the item currently at the
- *         front of the queue
+ *  front of the queue
  *********************************************/
  template <class T>
- T& Queue<T> :: front() throw (const char*)
+ T& Queue<T> :: front() const throw (const char*)
  {
-    try
-   {
-      if(this->empty())
-      {
-         throw "ERROR: attempting to access an item in an empty queue";
-      }
-      return data[frontNum];
-   }
-   catch(std::bad_alloc)
+   if(this->empty())
    {
       throw "ERROR: attempting to access an item in an empty queue";
    }
+   return data[frontNum];
  }
 #endif // QUEUE_H

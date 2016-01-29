@@ -5,7 +5,7 @@
  *    This will contain the implementation for stocksBuySell() as well
  *    as any other function or class implementation you need
  * Author
- *    <your names here>
+ *    Justin Waite & Winson So
  **********************************************************************/
 
 #include <iostream>    // for ISTREAM, OSTREAM, CIN, and COUT
@@ -13,6 +13,8 @@
 #include <cassert>     // for ASSERT
 #include "stock.h"     // for STOCK_TRANSACTION
 #include "queue.h"     // for QUEUE
+#include "dollars.h"   // FOR DOLLARS
+#include "portfolio.h" // FOR PORTFOLIO
 using namespace std;
 
 /************************************************
@@ -30,7 +32,37 @@ void stocksBuySell()
    cout << "  display         - Display your current stock portfolio\n";
    cout << "  quit            - Display a final report and quit the program\n";
 
-   // your code here...
+   Portfolio portfolio;
+
+   // begin loop
+   do {
+      cout << "> ";
+
+      string cmd;
+      cin >> cmd;
+
+      if (cmd == "display")
+         portfolio.display();
+
+      if (cmd == "quit")
+         return;
+
+      if (cmd != "buy" && cmd != "sell")
+         continue;
+
+      int qty;
+      Dollars price;
+      cin >> qty;
+      cin >> price;
+
+      if (cmd == "buy")
+      {
+         Transaction t(qty, price);
+         portfolio.addBuyTransaction(t);
+      }
+
+      if (cmd == "sell")
+         portfolio.sellStocks(qty, price);
+   }
+   while(true);
 }
-
-
