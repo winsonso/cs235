@@ -5,7 +5,7 @@
  *    This will contain just the prototype for nowServing(). You may
  *    want to put other class definitions here as well.
  * Author
- *    <your names here>
+ *    Justin Waite & Winson So
  ************************************************************************/
 
 #ifndef NOW_SERVING_H
@@ -17,4 +17,3 @@
 void nowServing();
 
 #endif // NOW_SERVING_H
-

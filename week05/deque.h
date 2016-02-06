@@ -29,8 +29,8 @@ template <class T>
 class Deque
 {
 public:
-	// default constructor : empty and kinda useless
-	Deque() : numItems(0), capac(0), frontNum(0), backNum(0), data(0x00000000), input(false) {}
+	// default constructor : set to empty
+	Deque() : numItems(0), capac(0), frontNum(0), backNum(0), data(0x00000000) {}
 
 	// copy constructor : copy the deque class
 	Deque(const Deque & rhs) throw (const char *);
@@ -52,10 +52,10 @@ public:
    int size() const    { return numItems;              }
 
    // capacity
-   int capacity() const {return capac;}
+   int capacity() const { return capac; }
 
    // remove all the items from the container
-   void clear()        { numItems = 0;frontNum =0; backNum = 0;}
+   void clear()        { numItems = 0;frontNum = 0; backNum = 0; }
 
    // Adds an item to the back of the deque
    void push_back(const T &t) throw (const char*);
@@ -70,13 +70,26 @@ public:
    void pop_back() throw (const char*);
 
    // Returns the item currently at the front of the deque
-   T front() throw (const char*);
+   T& front() throw (const char*);
 
    // Returns the item currently at the back of the deque.
-   T back() throw (const char*);
+   T& back() throw (const char*);
 
-   // Assignment operator
-   Deque<T> & operator = (const Deque<T> &rhs);
+   void print() {
+      std::cout << "current data:" << std::endl;
+      for (int i = 0; i < capac; i++)
+      {
+         if (i == frontNum)
+            std::cout << "[f]" << data[i] << std::endl;
+         else if (i == backNum)
+            std::cout << "[b]" << data[i] << std::endl;
+         else
+            std::cout << "[" << i << "]" << data[i] << std::endl;
+      }
+      std::cout << "numItems: " << numItems << std::endl;
+      if (!empty())
+         std::cout << "front: " << front() << std::endl;
+   }
 
 private:
    T * data;          // dynamically allocated array of T
@@ -84,7 +97,6 @@ private:
    int capac;         // how many items can I put on the Container before full?
    int frontNum;      // index of the front item
    int backNum;       // index of the back item
-   bool input;        // to check if it is entered
 
    void resize(int newCapac);
 };
@@ -103,8 +115,14 @@ void Deque<T> :: resize(int newCapac)
    // attempt to allocate
    try
    {
+      // Just need to allocate new array without copying anything.
       if (capac == 0)
+      {
          data = new T[newCapac];
+         backNum = 0;
+      }
+
+      // There were items before, so allocate new and copy old.
       else
       {
          T* temp = data;
@@ -112,15 +130,14 @@ void Deque<T> :: resize(int newCapac)
          if (numItems > 0)
          {
             int i = 0;
-            for(int k = frontNum; i < numItems; k = (k + 1) % capac)
-               data[i++] = temp[k];
+            for(int iOld = frontNum; i < numItems; iOld = (iOld + 1) % capac)
+               data[i++] = temp[iOld];
             backNum = i - 1;
          }
          delete[] temp;
       }
        capac = newCapac;
        frontNum = 0;
-
    }
    catch (std::bad_alloc)
    {
@@ -132,10 +149,10 @@ void Deque<T> :: resize(int newCapac)
  * DEQUE :: COPY CONSTRUCTOR
  *******************************************/
 template <class T>
-Deque <T> :: Deque(const Deque <T> & rhs) throw (const char *)
+Deque <T> :: Deque(const Deque <T> & rhs) throw (const char *) : capac(0),
+   numItems(0), frontNum(0), backNum(0)
 {
    assert(rhs.capac >= 0);
-   capac = numItems = frontNum = backNum = 0;
 
    // do nothing if there is nothing to do
    if (rhs.capac == 0)
@@ -153,8 +170,8 @@ Deque <T> :: Deque(const Deque <T> & rhs) throw (const char *)
 
    // copy the items over one at a time using the assignment operator
    int i = 0;
-   for (int k = rhs.frontNum; i < numItems; k = (k + 1) % rhs.capac)
-      data[i++] = rhs.data[k];
+   for (int iRhs = rhs.frontNum; i < numItems; iRhs = (iRhs + 1) % rhs.capac)
+      data[i++] = rhs.data[iRhs];
 
    // the rest needs to be filled with the default value for T
    for (int i = backNum + 1; i < capac; i++)
@@ -166,12 +183,12 @@ Deque <T> :: Deque(const Deque <T> & rhs) throw (const char *)
  * Preallocate the container to "capacity"
  **********************************************/
 template <class T>
-Deque<T> :: Deque(int capac) throw (const char *)
+Deque<T> :: Deque(int capac) throw (const char *) : capac(0), numItems(0),
+   frontNum(0), backNum(0)
 {
    assert(capac >= 0);
-   this->capac = 0;
 
-   // do nothing if there is nothing to do
+   // Set data to empty and return.
    if (capac == 0)
    {
       this->data = 0x00000000;
@@ -181,44 +198,9 @@ Deque<T> :: Deque(int capac) throw (const char *)
    // attempt to allocate
    resize(capac);
 
-   // set defaults
-   numItems = 0;
-   frontNum = 0;
-   backNum = 0;
-
    // initialize the container by calling the default constructor for each item
    for (int i = 0; i < capac; i++)
       data[i] = T();
-}
-
-/**********************************************
- * DEQUE : ASSIGNMENT OPERATOR
- * Sets the queue to a new copy of the rhs.
- **********************************************/
-template<class T>
-Deque<T> & Deque<T>::operator = (const Deque<T> &rhs)
-{
-   if (this == &rhs)
-   {
-      return *this;
-   }
-
-   if (rhs.numItems > capac)
-   {
-      resize(rhs.capac);
-   }
-
-   numItems = rhs.numItems;
-   frontNum = rhs.frontNum;
-   backNum = rhs.backNum;
-
-   //copy over the items individually
-   for (int i = 0; i < numItems; i++)
-   {
-      data[i] = rhs.data[i];
-   }
-
-   return *this;
 }
 
 /******************************************************
@@ -227,189 +209,95 @@ Deque<T> & Deque<T>::operator = (const Deque<T> &rhs)
 template <class T>
 void Deque<T>::push_front(const T &t) throw (const char*)
 {
-try
-{
-   input = true;
-   if(numItems == 0 )
-   {
-      if (capac == 0)
-      {
-         capac = 1;
-         data = new T [capac];
-      }
-      data[0] = t;
-      backNum =1;
-      numItems++;
-      frontNum = 0;
-      return;
-   }
-   //frontNum = frontNum -1;
-   if(numItems == capac)
-   {
-      T*temp = data;
-      capac = capac*2;
-      data = new T[capac];
-      int i = 0;
-      for (int j = frontNum; i < numItems; j = (j +1)%(capac/2))
-      {
-         data[i] = temp[j];
-         i++;
-      }
-      delete[] temp;
-      frontNum = 0;
-      backNum = numItems;
-   }
+   // If we need to increase capacity, do it.
+   if (capac == 0)
+      resize(1);
+   else if (numItems == capac)
+      resize(capac * 2);
 
-   if (frontNum == 0 && numItems > 0)
-   {
-      if (numItems != capac)
-      {
-      frontNum = capac -1;
-      data[frontNum] = t;
-      numItems++;
-      }
-      return;
-      }
-   data[frontNum -1] = t;
-   frontNum--;
+   // Decrease the frontNum index and wrap around if needed.
+   if (numItems > 0)
+      frontNum = (frontNum - 1 < 0) ? capac - 1 : frontNum - 1;
+
+   // Insert new item to front.
+   data[frontNum] = t;
    numItems++;
-  }
-  catch (std::bad_alloc)
-  {
-  	throw "ERROR: Unable to allocate a new buffer for deque";
-  }
 }
 
 /******************************************************
  *  push_back:  Adds an item to the back of the deque
  ******************************************************/
 template <class T>
-void Deque<T>::push_back(const T &t) throw (const char*)
+void Deque<T>::push_back(const T& t) throw (const char*)
 {
-try
-	{
-   if(numItems == 0 )
-   {
-      if (capac == 0)
-      {
-         capac = 1;
-         data = new T [capac];
-      }
-      data[0] = t;
-      frontNum = capac;
-      backNum = 1;
-      numItems++;
-      return;
-   }
+   // If we need to increase capacity, do it.
+   if (capac == 0)
+      resize(1);
+   else if(numItems == capac)
+      resize(capac * 2);
 
-   // check if we dont have enough space
-   if(numItems == capac)
-   {
-      T*temp = data;
-      capac = capac*2;
-      data = new T[capac];
-      int i = 0;
-      for (int j = frontNum; i < numItems; j = (j +1)%(capac/2))
-      {
-         data[i] = temp[j];
-         i++;
-      }
-      delete[] temp;
-      frontNum = 0;
-      backNum = numItems;
-   }
+   // Increase the backNum index and wrap around if needed.
+   if (numItems > 0)
+      backNum = (backNum + 1) % capac;
 
-   //the insert part
-   if(numItems != capac)
-   {
-      data[backNum] = t;
-   }
-
-   backNum = (backNum + 1) % capac;
+   // Insert new item to back.
+   data[backNum] = t;
    numItems++;
-   }
-   catch (std::bad_alloc)
-  {
-  	throw "ERROR: Unable to allocate a new buffer for deque";
-  }
 }
 
 /*****************************************************
  *  pop_back: Removes an item from the back of the
- *            deque, serving to reduce the size by one.
+ *           deque, serving to reduce the size by one.
  ****************************************************/
 template <class T>
 void Deque<T>::pop_back() throw (const char*)
 {
-    if(!this->empty())
-    {
-       backNum = (backNum -1)%capac;
-       numItems--;
-       if(backNum == 0)
-       {
-          backNum = capac;
-       }
-    }
-    else
-        throw"ERROR: unable to pop from the back of empty deque";
+   if(empty())
+      throw"ERROR: unable to pop from the back of empty deque";
+
+   numItems--;
+
+   // Decrease the backNum, wrapping if needed.
+   if (numItems > 0)
+      backNum = (backNum - 1 < 0) ? capac - 1 : backNum - 1;
 }
 
 /*****************************************************
  *  pop_front: Removes an item from the front of the
- *            deque, serving to reduce the size by one.
+ *           deque, serving to reduce the size by one.
  ****************************************************/
 template <class T>
 void Deque<T>::pop_front() throw (const char*)
 {
-    if(!this->empty())
-    {
-       if(frontNum == capac -1)
-          frontNum = 0;
-       else
-       {
-       	frontNum = (frontNum + 1)% capac;
-       }
-       numItems--;
-    }
-    else
-        throw "ERROR: unable to pop from the front of empty deque";
+   if(empty())
+      throw "ERROR: unable to pop from the front of empty deque";
+
+   numItems--;
+   // Increase the frontNum, wrapping if needed.
+   if (numItems > 0)
+      frontNum = (frontNum + 1) % capac;
 }
 
 /**************************************************************
  *  Front: Returns the item currently at the front of the deque
  *************************************************************/
- template <class T>
- T Deque<T>::front() throw (const char*)
- {
-     if(this->empty())
-     {
-        throw"ERROR: unable to access data from an empty deque";
-     }
-     if(input)
-       return data[frontNum];
-     else
-     {
-        int num = backNum - numItems;
-        return data[num];
-        }
- }
+template <class T>
+T& Deque<T>::front() throw (const char*)
+{
+   if(this->empty())
+      throw"ERROR: unable to access data from an empty deque";
+   return data[frontNum];
+}
 
  /**************************************************************
   *  Back: Returns the item currently at the back of the deque
   *************************************************************/
- template <class T>
- T Deque<T>::back() throw (const char*)
- {
-       if(this->empty())
-       {
-          throw"ERROR: unable to access data from an empty deque";
-       }
-
-       //    if the capacity is full
-       if (backNum == 0)
-          return data[capac -1];
-       else
-          return data[(backNum-1)%capac];
+template <class T>
+T& Deque<T>::back() throw (const char*)
+{
+   if(this->empty())
+      throw"ERROR: unable to access data from an empty deque";
+   return data[backNum];
 }
 
 #endif // DEQUE_H

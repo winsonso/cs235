@@ -3,7 +3,7 @@
 *    Week 05, DEQUE
 *    Brother Helfrich, CS 235
 * Author:
-*    Br. Helfrich
+*    Justin Waite & Winson So
 * Summary:
 *    This is a driver program to exercise the Deque class.  When you
 *    submit your program, this should not be changed in any way.  That being
@@ -21,7 +21,7 @@ using namespace std;
 void testSimple();
 void testPush();
 void testPop();
-// void testErrors();
+void testErrors();
 
 // To get your program to compile, you might need to comment out a few
 // of these. The idea is to help you avoid too many compile errors at once.
@@ -30,7 +30,7 @@ void testPop();
 #define TEST1   // for testSimple()
 #define TEST2   // for testPush()
 #define TEST3   // for testPop()
-// #define TEST4   // for testErrors()
+#define TEST4   // for testErrors()
 
 /**********************************************************************
  * MAIN
@@ -67,10 +67,10 @@ int main()
          testPop();
          cout << "Test 3 complete\n";
          break;
-      // case '4':
-      //    testErrors();
-      //    cout << "Test 4 complete\n";
-      //    break;
+      case '4':
+         testErrors();
+         cout << "Test 4 complete\n";
+         break;
       default:
          cout << "Unrecognized command, exiting...\n";
    }

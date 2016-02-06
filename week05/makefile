@@ -11,7 +11,10 @@
 #     data on both sides. The implementation displayed in this
 #     project is make a Now Serving system for the Linux Lab.
 # Time:
-#     7hours + ?
+#     2 hours on nowServing and 10 hours on Deque
+#     Hardest Part: Nothing seemed particularly hard this time
+#     around, but as usually finding little bugs took most of
+#     the time.
 ###############################################################
 
 ##############################################################
@@ -29,5 +32,5 @@ a.out: deque.h week05.o nowServing.o
 week05.o: deque.h week05.cpp
 	g++ -c week05.cpp
 
-nowServing.o: nowServing.h nowServing.cpp deque.h
+nowServing.o: nowServing.h nowServing.cpp deque.h request.h
 	g++ -c nowServing.cpp
