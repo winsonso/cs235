@@ -3,7 +3,7 @@
 *    Week 06, NODE
 *    Brother Helfrich, CS 235
 * Author:
-*    Br. Helfrich
+*    Br. Helfrich (In use by Justin Waite & Winson So)
 * Summary:
 *    This is a driver program to exercise the Node class.  When you
 *    submit your program, this should not be changed in any way.  That being
