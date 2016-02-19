@@ -261,7 +261,7 @@ T & List<T>::back() throw(const char*)
 * Inserts an item in the middle of a list
 ******************************************************/
 template <class T>
-ListIterator<T> insert(ListIterator<T> location, const T& t) throw(const char*)
+ListIterator<T> List<T>::insert(ListIterator<T> location, const T& t) throw(const char*)
 {
   try
   {
@@ -420,8 +420,8 @@ class ListIterator
       return tmp;
    }
 
-   friend ListIterator <T> List<T>::insert(ListIterator<T> location , const T & t) throw(const char*);
-   friend void List<T> :: remove(ListIterator<T> location) throw(const char*);
+   friend ListIterator<T> List<T>::insert(ListIterator<T> location , const T & t) throw(const char*);
+   friend void List<T>::remove(ListIterator<T> location) throw(const char*);
 
   private:
    Node<T> * p;
