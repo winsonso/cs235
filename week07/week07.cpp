@@ -3,7 +3,7 @@
 *    Week 07, LIST
 *    Brother Helfrich, CS 235
 * Author:
-*    Br. Helfrich
+*    Br. Helfrich, used by Justin Waite & Winson So
 * Summary:
 *    This is a driver program to exercise the List class.  When you
 *    submit your program, this should not be changed in any way.  That being

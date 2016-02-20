@@ -2,358 +2,125 @@
 * Header:
 *    List
 * Summary:
-*    This class contains  both a forward iterator and a reverse iterator,
-*    it will be necessary to change our Node class to contain a pPrev pointer
-*    as well as a pNext pointer.
+*    The list class holds a doubly-linked list of nodes. This file
+*    also contains the Iterator for the list.
 *
 *    This will contain the class definition of:
-*        Node         : A class that holds a collection of data
-         List
-         ListIterator
+*        Node         : Holds data and pointers to other nodes.
+*        List         : Holds a collection of Nodes.
+*        ListIterator : Used to iterate through a list.
 * Author
 *    Justin Waite & Winson So
 ************************************************************************/
 #ifndef LIST_H
 #define LIST_H
-#define NULL_0
 
-template <class T>
-class Node; // Node class
-template <class T>
-class ListIterator; // Iterator class
-/***************************************
-* LIST CLASS
-* To make a doubly-linked list and the
-* pointerpoints to the previous node and
-* the next node in the list
-****************************************/
-template<class T>
-class List
-{
-public:
-  // default constructor
-  List(): items(0), pHead(NULL), pTail(NULL){}
-
-  // copy constructor
-  List(const List &rhs) throw(const char*);
-
-  // destuctor
-  ~List(){clear();}
-
-  // size
-  int size() {return items;}
-
-  // clear
-  void clear();
-
-  // empty
-  bool empty() {return !items;}
-
-  // push_back
-  void push_back(const T &t) throw(const char*);
-
-  // push_front
-  void push_front(const T &t) throw(const char*);
-
-  // front
-  T & front() throw(const char*);
-
-  // back
-  T & back() throw(const char*);
-
-  // insert return iterator
-  ListIterator<T> insert(ListIterator<T> location, const T& t) throw(const char*);
-
-  // remove
-  void remove(ListIterator<T> location) throw(const char*);
-
-  // Return an iterator to the beginning/end of the LIST
-  ListIterator<T> begin() {return ListIterator<T> (pHead); }
-  ListIterator<T> end()
-  {
-    if(pTail == NULL)
-      return ListIterator<T> (pTail);
-    else
-      return ListIterator<T> (pTail->pNext);
-  }
-
-  // Return a reverse iterator to the beginning/end of the LIST
-  ListIterator<T> rbegin() {return ListIterator<T> (pTail); }
-  ListIterator<T> rend()
-  {
-    if(pHead == NULL)
-      return ListIterator<T> (pHead);
-    else
-      return ListIterator<T> (pHead->pPrev);
-  }
-
-private:
-  int items;
-  Node<T>* pHead;
-  Node<T>* pTail;
-};
-
-/******************************************
-* LIST: COPY CONSTRUCTOR
-******************************************/
-template <class T>
-List<T>:: List(const List<T> &rhs) throw(const char*)
-{
-  if (rhs.pHead == NULL)
-  {
-    items = 0;
-    pHead = NULL;
-    pTail = NULL;
-    return;
-  }
-  items = rhs.items;
-
-  // copy all the node
-  try
-  {
-    Node<T> *newHead = new Node<T>(rhs.pHead->data);
-    pHead = newHead;
-    Node<T> *newTail = new Node<T>(rhs.pTail->data);
-    pTail = newTail;
-
-    Node<T> *nextPtr = rhs.pHead->pNext;
-    Node<T> *myPtr = pHead;
-    while (nextPtr != NULL) {
-      myPtr->pNext = new Node<T>(nextPtr->data);
-      nextPtr = nextPtr->pNext;
-      myPtr = myPtr->pNext;
-    }
-
-  }
-  catch(std::bad_alloc)
-  {
-    throw "ERROR: unable to allocate a new node for a list";
-  }
-}
-
-/******************************************
-* LIST: clear()
-* Empties the list of all items
-******************************************/
-template <class T>
-void List<T>:: clear()
-{
-  if(pHead != NULL)
-  {
-    // To check each node if it is existed,
-    // if it does, delete the node one by one
-    Node<T>* tmp = pHead->pNext;
-    while(tmp != NULL)
-    {
-      delete pHead;
-      pHead = tmp;
-      tmp = tmp->pNext;
-    }
-    delete pHead;
-    pHead = NULL;
-    pTail = NULL;
-    items = 0;
-  }
-  else
-  return;
-}
-
-/******************************************
-* LIST: push_back()
-* Adds an item to the back of the list
-******************************************/
-template <class T>
-void List<T>::push_back(const T &t) throw(const char*)
-{
-  try
-  {
-    Node<T>* newData = new Node<T>(t);
-
-    if(items == 0)
-    {
-      pHead = newData;
-      pTail = newData;
-      items++;
-    }
-    else
-    {
-      newData->pPrev = pTail;
-      pTail->pNext = newData;
-      pTail = newData;
-      items++;
-    }
-  }
-  catch(std::bad_alloc)
-  {
-    throw "ERROR: unable to allocate a new node for a list";
-  }
-}
-
-/******************************************
-* LIST: push_front()
-* Adds an item to the front of the list
-******************************************/
-template <class T>
-void List<T>::push_front(const T &t) throw(const char*)
-{
-  try
-  {
-    Node<T>* newData = new Node<T>(t);
-
-    if(items == 0)
-    {
-      pHead = newData;
-      pTail = newData;
-    }
-    else
-    {
-      pHead->pPrev    = newData;
-      newData->pNext = pHead;
-      pHead = newData;
-    }
-    items++;
-  }
-  catch(std::bad_alloc)
-  {
-    throw "ERROR: unable to allocate a new node for a list";
-  }
-}
-/*****************************************************
-* LIST: front()
-* Returns the item currently at the front of the list
-******************************************************/
-template <class T>
-T & List<T>::front() throw(const char*)
-{
-  try
-  {
-      if(items != 0)
-      return pHead->data;
-  }
-  catch(std::bad_alloc)
-  {
-    throw "ERROR: unable to access data from an empty list";
-  }
-  return pHead->data; // it kept giving me warning so I duplicated the return value.
-}
-
-/*****************************************************
-* LIST: back()
-* Returns the item currently at the back of the list
-******************************************************/
-template <class T>
-T & List<T>::back() throw(const char*)
-{
-  try
-  {
-      if(items != 0)
-      return pTail->data;
-  }
-  catch(std::bad_alloc)
-  {
-    throw "ERROR: unable to access data from an empty list";
-  }
-  return pTail->data; // same here
-}
-
-/*****************************************************
-* LIST: insert()
-* Inserts an item in the middle of a list
-******************************************************/
-template <class T>
-ListIterator<T> List<T>::insert(ListIterator<T> location, const T& t) throw(const char*)
-{
-  try
-  {
-    Node<T>* newData = new Node<T>(t);
-    if (location == NULL)
-      push_back(t);
-    else if (location.p->pPrev && location.p->pNext != NULL)
-    {
-      location.p->pPrev->pNext = newData;  // the (n-1)th node points to the new node
-      newData->pPrev = location.p->pPrev;  // the new node points to (n-1)th node
-      location.p->pPrev = newData;         // the pPrev of nth node points to new node
-      newData->pNext = location.p;         // the new node points to nth node
-      //items++;
-      return ListIterator<T> (location.p->pPrev);
-    }
-    else
-      push_front(t);
-  }
-  catch (std::bad_alloc)
-  {
-    throw "ERROR: unable to allocate a new node for a list";
-  }
-}
-
-/*****************************************************
-* LIST: remove()
-* Removes an item from the middle of a list
-******************************************************/
-template <class T>
-void List<T>::remove(ListIterator<T> location) throw(const char*)
-{
-  try
-  {
-    //that's the end
-    if(location.p->pNext == NULL)
-    {
-      location.p->pPrev->pNext = NULL;
-      pTail = location.p->pPrev;
-      delete location.p;
-    }
-    // that's the front
-    else if(location.p->pPrev == NULL)
-    {
-      pHead = location.p->pNext;
-      pHead->pPrev = NULL;
-      delete location.p;
-    }
-    //that's middle
-    else
-    {
-      location.p->pPrev->pNext = location.p->pNext;
-      location.p->pNext->pPrev = location.p->pPrev;
-      delete location.p;
-    }
-    items--;
-  }
-  catch(std::bad_alloc)
-  {
-    throw "ERROR: unable to remove from an invalid location in a list";
-  }
-}
 /******************************************
 * NODE CLASS
-* a pointer points to the pPrev and the
-* other pointer points to the pNext
+* Holds data and pointers to other nodes.
 *******************************************/
 template <class T>
 class Node
 {
-  public:
+public:
    T data;
-   Node<T>* pNext;
-   Node<T>* pPrev;
+   Node<T> * pNext;
+   Node<T> * pPrev;
 
-   // default constructor taking initial value:
-  Node() : pNext(NULL), pPrev(NULL){}
-
-   // non-default constructor : pre-allocate
-   Node(T temp) throw (const char *){
-      data = temp;
-      pNext = NULL;
-      pPrev = NULL;
-   }
+   Node() : pNext(NULL), pPrev(NULL) { }
+   Node(T data) : data(data), pNext(NULL), pPrev(NULL) { }
 };
 
-/***********************
- * LISTITERATOR CLASS
- **********************/
+template <class T>
+class ListIterator; // Iterator class
+
+/*******************************************
+* LIST CLASS
+* The list class holds a doubly-linked list
+* of nodes.
+*******************************************/
+template <class T>
+class List
+{
+public:
+   // default constructor
+   List() throw (const char *);
+
+   // copy constructor
+   List(const List<T> & rhs) throw (const char *);
+
+   // destructor
+   ~List() {
+      clear();
+      delete pHead;
+      delete pTail;
+   }
+
+   // Clears the list, deleting the pointers.
+   void clear();
+
+   // Checks if the list is empty by seeing if pHead points to pTail
+   bool empty() const { return (pHead->pNext == pTail); }
+
+   // Returns the number of items in the list.
+   int size () const { return numItems; }
+
+   // Adds an item onto the front of the list.
+   void push_front(const T & data) throw (const char *);
+
+   // Adds an item onto the back of the list.
+   void push_back(const T & data) throw (const char *);
+
+   // Copies the rhs list into this.
+   List<T> & operator = (List<T> & rhs) throw (const char *);
+
+   // Returns the item at the front of the list
+   T & front() throw (const char *);
+
+   // Returns the item at the back of the list
+   T & back () throw (const char *);
+
+   // Returns the first node in the list
+   ListIterator<T> begin() const { return ListIterator<T>(pHead->pNext); }
+
+   // Returns the past-last node in the list
+   ListIterator<T> end() const { return ListIterator<T>(pTail); }
+
+   // Returns the last node in the list
+   ListIterator<T> rbegin() const { return ListIterator<T>(pTail->pPrev); }
+
+   // Returns the before-first node in the list
+   ListIterator<T> rend() const { return ListIterator<T>(pHead); }
+
+   // Inserts an item into the list.
+   ListIterator<T> insert(ListIterator<T> & pos, const T & t) throw (const char *);
+
+   // Removes an item from the list.
+   void remove(ListIterator<T> & pos) throw (const char *);
+
+private:
+   // The place-holding head node
+   Node<T> * pHead;
+
+   // The place-holding tail node
+   Node<T> * pTail;
+
+   // The number of items in the list.
+   int numItems;
+
+   // Attempts to allocate a new node.
+   Node<T> * allocateNode(T t = T()) throw (const char *);
+};
+
+/**************************************************
+ * List ITERATOR
+ * An iterator through List
+ *************************************************/
 template <class T>
 class ListIterator
 {
-  public:
+public:
+
    // default constructor
    ListIterator() : p(0x00000000) {}
 
@@ -361,7 +128,9 @@ class ListIterator
    ListIterator(Node<T> * p) : p(p) {}
 
    // copy constructor
-   ListIterator(const ListIterator & rhs) { *this = rhs;}
+   ListIterator(const ListIterator & rhs) {
+      *this = rhs;
+   }
 
    // assignment operator
    ListIterator & operator = (const ListIterator & rhs)
@@ -377,54 +146,251 @@ class ListIterator
    }
 
    // equals operator
-   bool operator = (const ListIterator &rhs) const
+   bool operator = (const ListIterator & rhs) const
    {
-     return rhs.p = this->p;
+      return rhs.p = this->p;
    }
 
-   //equal operator
-   bool operator == (const ListIterator &rhs) const
+   // eaual operator
+   bool operator == (const ListIterator & rhs) const
    {
-     return rhs.p == this->p;
+      return rhs.p == this->p;
    }
 
    // dereference operator
-   T & operator * () { return p->data; }
+   T & operator * ()
+   {
+      return p->data;
+   }
 
    // prefix increment
-   ListIterator <T> & operator ++ ()
+   ListIterator<T> & operator ++ ()
    {
       p = p->pNext;
       return *this;
    }
 
-   ListIterator <T> & operator -- ()
+   // prefix decrement
+   ListIterator<T> & operator -- ()
    {
       p = p->pPrev;
       return *this;
    }
 
    // postfix increment
-   ListIterator <T> operator++(int postfix)
+   ListIterator<T> operator ++ (int postfix)
    {
       ListIterator tmp(*this);
       ++p;
       return tmp;
    }
 
-   // postfix increment
-   ListIterator <T> operator--(int postfix)
+   // postfix decrement
+   ListIterator<T> operator -- (int postfix)
    {
       ListIterator tmp(*this);
       --p;
       return tmp;
    }
 
-   friend ListIterator<T> List<T>::insert(ListIterator<T> location , const T & t) throw(const char*);
-   friend void List<T>::remove(ListIterator<T> location) throw(const char*);
+   friend ListIterator<T> List<T> :: insert(ListIterator<T> & pos, const T & t) throw (const char *);
+   friend void List<T> :: remove(ListIterator<T> & pos) throw (const char *);
 
-  private:
+private:
    Node<T> * p;
 };
+
+/**************************************************
+ * LIST :: ALLOCATE NODE
+ * Attempts to allocate a new node.
+ *************************************************/
+template <class T>
+Node<T> * List<T> :: allocateNode(T t) throw (const char *)
+{
+   Node<T> * node;
+   try
+   {
+      node = new Node<T>(t);
+   }
+   catch(std::bad_alloc)
+   {
+     throw "ERROR: unable to allocate a new node for a list";
+   }
+   return node;
+}
+
+/**************************************************
+ * LIST :: DEFAULT CONSTRUCTOR
+ * Initializes the head and tail nodes and points
+ * them to each other.
+ *************************************************/
+template <class T>
+List<T> :: List() throw (const char *) : numItems(0)
+{
+   pHead = allocateNode();
+   pTail = allocateNode();
+
+   pHead->pNext = pTail;
+   pTail->pPrev = pHead;
+}
+
+/**************************************************
+ * LIST :: COPY CONSTRUCTOR
+ * Initializes the head and tail nodes and copies
+ * the rhs list.
+ *************************************************/
+template <class T>
+List<T> :: List(const List<T> & rhs) throw (const char *)
+{
+   pHead = allocateNode();
+   pTail = allocateNode();
+
+   pHead->pNext = pTail;
+   pTail->pPrev = pHead;
+
+   for (ListIterator<T> it = rhs.begin(); it != rhs.end(); ++it)
+   {
+      T data = *it;
+      this->push_back(data);
+   }
+
+   numItems = rhs.numItems;
+}
+
+/**************************************************
+ * LIST :: CLEAR
+ * Clears the list, deleting the pointers.
+ *************************************************/
+template <class T>
+void List<T> :: clear()
+{
+   while (pHead->pNext != pTail)
+   {
+      Node<T> * temp = pHead->pNext;
+      pHead->pNext = temp->pNext;
+      delete temp;
+   }
+   pTail->pPrev = pHead;
+   numItems = 0;
+}
+
+/**************************************************
+ * LIST :: PUSH FRONT
+ * Adds an item onto the front of the list.
+ *************************************************/
+template <class T>
+void List<T> :: push_front(const T & data) throw (const char *)
+{
+   Node<T> * newNode = allocateNode(data);
+   Node<T> * temp = pHead->pNext;
+
+   newNode->pNext = temp;
+   newNode->pPrev = pHead;
+   temp->pPrev = newNode;
+   pHead->pNext = newNode;
+
+   numItems++;
+}
+
+/**************************************************
+ * LIST :: PUSH BACK
+ * Adds an item onto the back of the list.
+ *************************************************/
+template <class T>
+void List<T> :: push_back(const T & data) throw (const char *)
+{
+   Node<T> * newNode = allocateNode(data);
+   Node<T> * temp = pTail->pPrev;
+
+   newNode->pNext = pTail;
+   newNode->pPrev = temp;
+   temp->pNext = newNode;
+   pTail->pPrev = newNode;
+
+   numItems++;
+}
+
+/**************************************************
+ * LIST :: OPERATOR =
+ * Copies the rhs list into this.
+ *************************************************/
+template <class T>
+List<T> & List<T> :: operator = (List<T> & rhs) throw (const char *)
+{
+   this->clear();
+   Node<T> * ptr = rhs.pHead->pNext;
+
+   for (ListIterator<T> it = rhs.begin(); it != rhs.end(); ++it)
+   {
+      T data = *it;
+      this->push_back(data);
+   }
+
+   this->numItems = rhs.numItems;
+   return *this;
+}
+
+/**************************************************
+ * LIST :: FRONT
+ * Returns the item at the front of the list
+ *************************************************/
+template <class T>
+T & List<T> :: front() throw (const char *)
+{
+   if (empty()) throw "ERROR: unable to access data from an empty list";
+   return pHead->pNext->data;
+}
+
+/**************************************************
+ * LIST :: BACK
+ * Returns the item at the back of the list
+ *************************************************/
+template <class T>
+T & List<T> :: back() throw (const char *)
+{
+   if (empty()) throw "ERROR: unable to access data from an empty list";
+   return pTail->pPrev->data;
+}
+
+/**************************************************
+ * LIST :: INSERT
+ * Inserts an item into the list.
+ *************************************************/
+template <class T>
+ListIterator<T> List<T> :: insert(ListIterator<T> & pos, const T & t) throw (const char *)
+{
+   Node<T> * newNode = allocateNode(t);
+
+   Node<T> * pPrev = pos.p->pPrev;
+
+   pPrev->pNext = newNode;
+   newNode->pPrev = pPrev;
+   pos.p->pPrev = newNode;
+   newNode->pNext = pos.p;
+
+   numItems++;
+
+   return ListIterator<T>(newNode);
+}
+
+/**************************************************
+ * LIST :: REMOVE
+ * Removes an item from the list.
+ *************************************************/
+template <class T>
+void List<T> :: remove(ListIterator<T> & pos) throw (const char *)
+{
+   if (pos == end() || pos == rend())
+      throw "ERROR: unable to allocate a new node for a list";
+
+   Node<T> * pPrev = pos.p->pPrev;
+   Node<T> * pNext = pos.p->pNext;
+   pPrev->pNext = pNext;
+   pNext->pPrev = pPrev;
+
+   numItems--;
+
+   delete pos.p;
+}
 
 #endif //LIST_H

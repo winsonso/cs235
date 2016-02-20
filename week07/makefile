@@ -1,13 +1,20 @@
 ###############################################################
 # Program:
 #     Week 07, LIST
-#     Brother XXXXX, CS235
+#     Brother Helfrich, CS235
 # Author:
-#     <your name here>
+#     Justin Waite & Winson So
 # Summary:
-#     <put a description here>
+#     This is a definition and implementation of a doubly-linked
+#     list. This type of list uses Nodes that point both to the
+#     next and previous nodes. The implementation provided in
+#     this program is a fibonacci calculator. It will handle
+# 		very large numbers due to the WholeNumber class.
 # Time:
-#     <how long did it take to complete this program>?
+#     12 Hours. 4 Was spent chasing a bug in the WholeNumber
+#     addition. Fibonacci numbers worked until number 162, WholeNumber
+#     it hit a very specific case that wasn't considered in the
+#     original algorithm. Heads were banged on walls for a while.
 ###############################################################
 
 ##############################################################
@@ -26,6 +33,5 @@ a.out: list.h week07.o fibonacci.o
 week07.o: list.h week07.cpp
 	g++ -c week07.cpp
 
-fibonacci.o: fibonacci.h fibonacci.cpp list.h
+fibonacci.o: fibonacci.h fibonacci.cpp list.h wholenumber.h
 	g++ -c fibonacci.cpp
-
