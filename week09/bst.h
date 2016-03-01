@@ -5,7 +5,9 @@
  * Author:
  *    Justin Waite & Winson So
  * Summary:
- *
+ *    This file contains the class definitions for a Binary Search Tree
+ *    and its iterator. A Binary Search Tree is an ordered binary tree
+ *    which makes it trivial to search.
  ************************************************************************/
 
 #ifndef BST_H
@@ -14,10 +16,16 @@
 #include "bnode.h"
 #include "stack.h"
 
-// stub class for BSTIterator
+// stub definition for BSTIterator
 template <class T>
 class BSTIterator;
 
+/*******************************************
+ * CLASS BST
+ * A binary sort tree is an order binary tree
+ * which allows for simple searching since
+ * an order is kept.
+ ******************************************/
 template <class T>
 class BST
 {
@@ -38,13 +46,16 @@ public:
    bool empty() const { return pRoot = 0; }
 
    // inserts an item into the tree in the proper spot.
-   void insert(T & data) throw (const char *);
+   void insert(const T & data) throw (const char *);
 
-   // removes an item at the given iterator.
-   // void remove(BSTIterator & it);
+   // auxiliary recursive function used for insert.
+   void insertAux(BinaryNode<T> * subRoot, const T & data) throw (const char *);
 
    // deletes all the elements in the binary tree.
    void clear() { deleteBinaryTree(pRoot); }
+
+   // removes an item at the given iterator.
+   void remove(BSTIterator<T> & it);
 
    // finds an element in the binary tree.
    BSTIterator<T> & find(T t);
@@ -65,6 +76,11 @@ private:
    BinaryNode<T> * pRoot;
 };
 
+/*******************************************
+ * CLASS BSTIterator
+ * An iterator for the BST class. Nasty little
+ * devil.
+ ******************************************/
 template <class T>
 class BSTIterator
 {
@@ -103,11 +119,61 @@ private:
    Stack<BinaryNode<T> *> nodes;
 };
 
+/*******************************************
+ * BSTIterator NON-DEFAULT CONSTRUCTOR
+ * Constructor that takes a bnode pointer
+ ******************************************/
 template <class T>
 inline BSTIterator<T> :: BSTIterator(const BinaryNode<T> * p)
 {
    nodes.push(0);
    nodes.push(p);
+}
+
+/*******************************************
+ * BST COPY CONSTRUCTOR
+ * Copy constructor for the BST class.
+ ******************************************/
+template <class T>
+inline BST<T> :: BST(const BST<T> & rhs)
+{
+   pRoot = rhs.pRoot;
+}
+
+/*******************************************
+ * BST INSERT
+ * Calls the insertAux function to INSERT
+ * the data into the binary tree recursively.
+ ******************************************/
+template <class T>
+void BST<T> :: insert(const T & data) throw (const char *)
+{
+   insertAux(pRoot, data);
+}
+
+/*******************************************
+ * BST INSERT AUX
+ * Traverses the tree to find where to insert
+ * the data. Inserts the data in that spot.
+ ******************************************/
+template <class T>
+void BST<T> :: insertAux(BinaryNode<T> * subRoot, const T & data) throw (const char *)
+{
+   if (subRoot == 0)
+   {
+      try
+      {
+         subRoot = new BinaryNode<T>(data);
+      }
+      catch(std::bad_alloc)
+      {
+         throw "ERROR: Unable to allocate a node";
+      }
+   }
+   else if (data < subRoot->data)
+      insertAux(subRoot->pLeft, data);
+   else if (data > subRoot->data)
+      insertAux(subRoot->pRight, data);
 }
 
 /**************************************************
@@ -118,45 +184,45 @@ inline BSTIterator<T> :: BSTIterator(const BinaryNode<T> * p)
  * Author:      Br. Helfrich
  * Performance: O(log n) though O(1) in the common case
  *************************************************/
-// template <class T>
-// BSTIterator <T> & BSTIterator <T> :: operator -- ()
-// {
-//    // do nothing if we have nothing
-//    if (nodes.top() == NULL)
-//       return *this;
-//
-//    // if there is a left node, take it
-//    if (nodes.top()->pLeft != NULL)
-//    {
-//       nodes.push(nodes.top()->pLeft);
-//
-//       // there might be more right-most children
-//       while (nodes.top()->pRight)
-//          nodes.push(nodes.top()->pRight);
-//       return *this;
-//    }
-//
-//    // there are no left children, the right are done
-//    assert(nodes.top()->pLeft == NULL);
-//    BinaryNode <T> * pSave = nodes.top();
-//    nodes.pop();
-//
-//    // if the parent is the NULL, we are done!
-//    if (NULL == nodes.top())
-//       return *this;
-//
-//    // if we are the right-child, go to the parent.
-//    if (pSave == nodes.top()->pRight)
-//       return *this;
-//
-//    // we are the left-child, go up as long as we are the left child!
-//    while (nodes.top() != NULL && pSave == nodes.top()->pLeft)
-//    {
-//       pSave = nodes.top();
-//       nodes.pop();
-//    }
-//
-//    return *this;
-// }
+template <class T>
+BSTIterator <T> & BSTIterator <T> :: operator -- ()
+{
+   // do nothing if we have nothing
+   if (nodes.top() == NULL)
+      return *this;
+
+   // if there is a left node, take it
+   if (nodes.top()->pLeft != NULL)
+   {
+      nodes.push(nodes.top()->pLeft);
+
+      // there might be more right-most children
+      while (nodes.top()->pRight)
+         nodes.push(nodes.top()->pRight);
+      return *this;
+   }
+
+   // there are no left children, the right are done
+   assert(nodes.top()->pLeft == NULL);
+   BinaryNode <T> * pSave = nodes.top();
+   nodes.pop();
+
+   // if the parent is the NULL, we are done!
+   if (NULL == nodes.top())
+      return *this;
+
+   // if we are the right-child, go to the parent.
+   if (pSave == nodes.top()->pRight)
+      return *this;
+
+   // we are the left-child, go up as long as we are the left child!
+   while (nodes.top() != NULL && pSave == nodes.top()->pLeft)
+   {
+      pSave = nodes.top();
+      nodes.pop();
+   }
+
+   return *this;
+}
 
 #endif // BST_H

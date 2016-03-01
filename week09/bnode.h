@@ -100,6 +100,7 @@ BinaryNode<T> * BinaryNode<T> :: addRight(BinaryNode<T>* rhs)
 template <class T>
 void deleteBinaryTree(BinaryNode<T> * rhs)
 {
+   if (rhs == NULL) return;
    if(rhs->pLeft == NULL && rhs->pRight == NULL)
       delete rhs;
    else
