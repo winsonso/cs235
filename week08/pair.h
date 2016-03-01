@@ -27,7 +27,7 @@ class Pair
 {
 public:
    // constructors
-  Pair() : first(), second() {}
+   Pair() : first(), second() {}
    Pair(const T1 & first, const T2 & second) : first(first), second(second) {}
    Pair(const Pair <T1, T2> & rhs) : first(rhs.first), second(rhs.second) {}
 
@@ -42,7 +42,7 @@ public:
    // constant fetchers
    const T1 & getFirst()  const { return first;  }
    const T2 & getSecond() const { return second; }
-   
+
    // compare Pairs.  Only first will be compared!
    bool operator >  (const Pair & rhs) const { return first >  rhs.first; }
    bool operator >= (const Pair & rhs) const { return first >= rhs.first; }
@@ -50,7 +50,7 @@ public:
    bool operator <= (const Pair & rhs) const { return first <= rhs.first; }
    bool operator == (const Pair & rhs) const { return first == rhs.first; }
    bool operator != (const Pair & rhs) const { return first != rhs.first; }
-   
+
    // these are public.  We cannot validate!
    T1 first;
    T2 second;

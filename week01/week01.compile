@@ -1,0 +1,17 @@
+
+# mkdir week01.tar.dir 2>> week01.compile 
+
+# cp week01.tar week01.tar.dir/tar.tar 2>> week01.compile 
+
+# tar -xf  week01.tar.dir/tar.tar -C week01.tar.dir 2>> week01.compile >> week01.compile 
+
+# make a.out -C week01.tar.dir 2>> week01.compile >> week01.compile 
+make: Entering directory `/home/wai14005/cs235/week01/week01.tar.dir'
+g++ -c week01.cpp
+g++ -o a.out week01.o
+tar -cf week01.tar vector.h week01.cpp makefile
+make: Leaving directory `/home/wai14005/cs235/week01/week01.tar.dir'
+
+# mv week01.tar.dir/a.out /tmp/testbed/compileDir55fbf52d-46fa-42e5-8844-376ef7fa0a3b/week01 2>> week01.compile >> week01.compile 
+
+# rm -rf week01.tar.dir 2>> week01.compile 

@@ -1,13 +1,22 @@
 ###############################################################
 # Program:
 #     Week 08, Binary Tree
-#     Brother XXXXX, CS265
+#     Brother Helfrich, CS235
 # Author:
-#     <your name here>
+#     Justin Waite & Winson So
 # Summary:
-#     <put a description here>
+#     This project has a Binary Node class and implements The
+#     idea of a binary tree using Huffman code creation.
 # Time:
-#     4.5 hours.
+#     4.5 hours on bnode, 14 hours on huffman implementation.
+#     First, the huffman instructions were very unclear for
+#     us, even after reading the chapter and scouring The
+#     forums. After we finally got it worked out, the linux
+#     lab did not like it. It ran perfectly fine on our
+#     macbooks but it appears the compiler on the linux lab
+#     handles pointers a tad differently. That took a long Time
+#     to figure out what was wrong. This was definitely a
+#     challenging assignment.
 ###############################################################
 
 ##############################################################
@@ -22,8 +31,8 @@ a.out: week08.o huffman.o
 #      week08.o     : the driver program
 #      huffman.o      : the logic for the huffman code program
 ##############################################################
-week08.o: bnode.h huffman.h week08.cpp
+week08.o: bnode.h huffman.h week08.cpp list.h
 	g++ -c week08.cpp
 
-huffman.o: bnode.h huffman.h huffman.cpp
+huffman.o: bnode.h huffman.h huffman.cpp list.h
 	g++ -c huffman.cpp
