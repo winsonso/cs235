@@ -4,7 +4,7 @@
 *    Brother Helfrich, CS 235
 * Author:
 *    Br. Helfrich
-* Summary: 
+* Summary:
 *    This is a driver program to exercise the BST class.  When you
 *    submit your program, this should not be changed in any way.  That being
 *    said, you may need to modify this once or twice to get it to work.
@@ -28,10 +28,10 @@ void testSort();
 // of these. The idea is to help you avoid too many compile errors at once.
 // I suggest first commenting out all of these tests, then try to use only
 // TEST1.  Then, when TEST1 works, try TEST2 and so on.
-#define TEST1   // for testSimple()
-#define TEST2   // for testAdd()
-#define TEST3   // for testIterate()
-#define TEST4   // for testDelete()
+// #define TEST1   // for testSimple()
+// #define TEST2   // for testAdd()
+// #define TEST3   // for testIterate()
+// #define TEST4   // for testDelete()
 
 /**********************************************************************
  * MAIN
@@ -88,13 +88,13 @@ void testSimple()
 #ifdef TEST1
    try
    {
-      // Test1: a bool BST 
+      // Test1: a bool BST
       cout << "Create a bool Binary Search Tree "
            << "using the default constructor\n";
       BST <bool> tree;
 
       // Test2: double BST
-      cout << "Create a double Binary Search Tree\n"; 
+      cout << "Create a double Binary Search Tree\n";
       BST <double> * pTree = new BST <double>;
       delete pTree;
    }
@@ -132,14 +132,14 @@ void testAdd()
 
       // copy the tree to another
       BST <int> tree2(tree1);
-   
+
       cout << "\tTree deleted\n";
    }
    catch (const char * error)
    {
       cout << error << endl;
    }
-#endif // TEST2   
+#endif // TEST2
 }
 
 /*******************************************
@@ -151,7 +151,7 @@ void testIterate()
 {
 #ifdef TEST3
    cout.setf(ios::fixed | ios::showpoint);
-   cout.precision(1);   
+   cout.precision(1);
 
    //
    // An empty tree
@@ -168,9 +168,9 @@ void testIterate()
       for (it = tree.begin(); it != tree.end(); ++it)
          cout << *it << " ";
       cout << endl;
-      
+
       // tree deleted
-      cout << "\tTree deleted\n";      
+      cout << "\tTree deleted\n";
    }
    catch (const char * s)
    {
@@ -190,10 +190,10 @@ void testIterate()
       // fill the tree
       cout << "\tFill the BST with: 2.2  1.1  3.3  \n";
       tree1.insert(2.2);     //          2.2
-      tree1.insert(1.1);     //     +-----+-----+    
+      tree1.insert(1.1);     //     +-----+-----+
       tree1.insert(3.3);     //    1.1         3.3
       tree2 = tree1;
-      
+
       // display the contents forward
       cout << "\tContents forward:  ";
       for (it = tree1.begin(); it != tree1.end(); ++it)
@@ -207,15 +207,15 @@ void testIterate()
          cout << *it << "  ";
       cout << endl;
 
-      // tree deleted        
+      // tree deleted
       cout << "\tTree deleted\n";
       }
       catch (const char * s)
       {
          cout << "Thrown exception: " << s << endl;
       }
-      
-   
+
+
    //
    // a non-trivial tree
    //
@@ -235,11 +235,11 @@ void testIterate()
       tree1.insert(string("e"));     //       b     e   g     j
       tree1.insert(string("g"));     //     +-+   +-+   +-+
       tree1.insert(string("j"));     //     a     d       h
-      tree1.insert(string("a"));     
+      tree1.insert(string("a"));
       tree1.insert(string("d"));
       tree1.insert(string("h"));
       tree2 = tree1;
-      
+
       // display the contents forward
       cout << "\tContents forward:  ";
       for (it = tree1.begin(); it != tree1.end(); ++it)
@@ -252,7 +252,7 @@ void testIterate()
       for (it = tree2.rbegin(); it != tree2.rend(); --it)
          cout << *it << "  ";
       cout << endl;
-      
+
       // tree deleted
       cout << "\tTree deleted\n";
    }
@@ -306,7 +306,7 @@ void testDelete()
       //
 
       cout << "Remove a leaf node\n";
-      
+
       // find node 'D' and remove it
       it = tree.find('D');
       if (it == tree.end())
@@ -334,7 +334,7 @@ void testDelete()
       //
 
       cout << "Remove a one-child node\n";
-      
+
       // look for node 'E' and remove it
       it = tree.find('E');
       if (it == tree.end())
@@ -391,8 +391,8 @@ void testDelete()
       for (it = tree.begin(); it != tree.end(); ++it)
          cout << *it << ' ';
       cout << endl;
-      
-      
+
+
       cout << "\tTree deleted\n";
    }
    catch (const char * s)
@@ -447,7 +447,7 @@ void testSort()
    float array2[20] =
    {
       5.1, 2.4, 8.2, 2.7, 4.7, 1.8, 9.9, 3.4, 5.0, 1.0,
-      4.4, 3.4, 8.3, 2.9, 1.7, 7.9, 9.5, 9.3, 3.6, 2.9      
+      4.4, 3.4, 8.3, 2.9, 1.7, 7.9, 9.5, 9.3, 3.6, 2.9
    };
    int size2 = sizeof(array2) / sizeof(array2[0]);
    cout << "\tBefore:\t" << array2[0];
@@ -457,7 +457,7 @@ void testSort()
    cout << endl;
 
    // sort
-   sortBinary(array2, size2);   
+   sortBinary(array2, size2);
 
    // after
    cout << "\tAfter:\t" << array2[0];
