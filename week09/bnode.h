@@ -92,4 +92,23 @@ BinaryNode<T> * BinaryNode<T> :: addRight(BinaryNode<T>* rhs)
    return this;
 }
 
+/**********************************************
+* deleteBinaryTree()
+* Takes a BinaryNode as a parameter and deletes
+* all the children and itself
+***********************************************/
+template <class T>
+void deleteBinaryTree(BinaryNode<T> * rhs)
+{
+   if(rhs->pLeft == NULL && rhs->pRight == NULL)
+      delete rhs;
+   else
+   {
+      if(rhs->pLeft != NULL)
+         deleteBinaryTree(rhs->pLeft);
+      if(rhs->pRight != NULL)
+         deleteBinaryTree(rhs->pRight);
+   }
+}
+
 #endif // BST_H
