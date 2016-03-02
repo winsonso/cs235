@@ -1,5 +1,23 @@
+/***********************************************************************
+* Header:
+*    Binary Node
+* Summary:
+*    The Binary Node class is to capture the notion of a single node in
+*    a binary tree. There will br four member variables: a pointer to the
+*    node to the right chind(pRight), a pointer to the node to the left
+*    child(pLeft), a pointer to the parent (pParent), and the data
+*    associated with the node.
+*
+*    This will contain the class definition of:
+*        BinaryNode         : Holds data and pointers to other nodes.
+* Author
+*    Justin Waite & Winson So
+************************************************************************/
 #ifndef BTREE_H
 #define BTREE_H
+
+#include <iostream>
+using namespace std;
 
 template <class T>
 class BinaryNode
@@ -88,7 +106,8 @@ template <class T>
 BinaryNode<T> * BinaryNode<T> :: addRight(BinaryNode<T>* rhs)
 {
    this->pRight = rhs;
-   if (rhs != NULL) { rhs->pParent = this;}
+   if (rhs != NULL)
+      rhs->pParent = this;
    return this;
 }
 
@@ -101,15 +120,12 @@ template <class T>
 void deleteBinaryTree(BinaryNode<T> * rhs)
 {
    if (rhs == NULL) return;
-   if(rhs->pLeft == NULL && rhs->pRight == NULL)
-      delete rhs;
-   else
-   {
-      if(rhs->pLeft != NULL)
-         deleteBinaryTree(rhs->pLeft);
-      if(rhs->pRight != NULL)
-         deleteBinaryTree(rhs->pRight);
-   }
+   if(rhs->pLeft != NULL)
+      deleteBinaryTree(rhs->pLeft);
+   if(rhs->pRight != NULL)
+      deleteBinaryTree(rhs->pRight);
+
+   delete rhs;
 }
 
 #endif // BST_H
