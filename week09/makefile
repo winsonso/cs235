@@ -5,9 +5,19 @@
 # Author:
 #     Justin Waite & Winson So
 # Summary:
-#     <put a description here>
+#     This project is to create and implement a Binary Search
+#     Tree data type and its iterator. The tricky thing about
+#     this project is the iterator's increment and decrement
+#     functions. The implementation is a sort function using
+#     a binary tree which is very trivial.
 # Time:
-#     Monday: 1.5 hours
+#     bst.h required only 5 hours to complete, sortBinary.h
+#     took a whole 15 minutes. The most difficult part of The
+#     assignment was understanding what the decrement iterator
+#     actually did and how to replicate it for the increment.
+#     It took a lot of thought to fully understand how the
+#     pointers really worked, but once we thought it out first,
+#     implementation was easy!
 ###############################################################
 
 ##############################################################
