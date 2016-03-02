@@ -1,7 +1,7 @@
 ###############################################################
 # Program:
 #     Week 09, Binary Search Tree
-#     Brother Helfrich, CS265
+#     Brother Helfrich, CS235
 # Author:
 #     Justin Waite & Winson So
 # Summary:
