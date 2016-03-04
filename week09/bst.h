@@ -277,19 +277,26 @@ void BST<T> :: search(const T & t, bool & found, BinaryNode<T> *& locptr,
    }
 }
 
-/*******************************************
+/********************************************
  * BST FIND
- * Iterates through the tree and returns an
- * iterator of the item if found, otherwise
- * returns end().
- ******************************************/
+ * Using O(log n) to find the item.
+ * If the item is greater than the root then
+ * go to the right, if not go to the left.
+ *******************************************/
 template <class T>
 BSTIterator<T> BST<T> :: find(const T & t) const
 {
-   for (BSTIterator<T> it = begin(); it != end(); ++it)
-      if (*it == t)
-         return it;
-   return end();
+  BinaryNode<T>* tmp = pRoot;
+    while (tmp != NULL)
+    {
+      if(tmp->data == t)
+        break;
+      if(t > tmp->data)
+        tmp = tmp->pRight;
+      else
+        tmp = tmp->pLeft;
+    }
+  return BSTIterator<T> (tmp);
 }
 
 /*******************************************
