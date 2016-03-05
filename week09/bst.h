@@ -42,7 +42,7 @@ public:
    BST<T> & operator = (const BST<T> & rhs);
 
    // checks to see if the tree is empty.
-   bool empty() const { return pRoot = 0; }
+   bool empty() const { return pRoot == 0; }
 
    // inserts an item into the tree in the proper spot.
    void insert(const T & data) throw (const char *);
@@ -185,7 +185,8 @@ void BST<T> :: insert(const T & data) throw (const char *)
  * the data. Inserts the data in that spot.
  ******************************************/
 template <class T>
-void BST<T> :: insertAux(BinaryNode<T> *& subRoot, const T & data) throw (const char *)
+void BST<T> :: insertAux(BinaryNode<T> *& subRoot, const T & data)
+   throw (const char *)
 {
    if (subRoot == 0)
    {
@@ -198,10 +199,10 @@ void BST<T> :: insertAux(BinaryNode<T> *& subRoot, const T & data) throw (const 
          throw "ERROR: Unable to allocate a node";
       }
    }
-   else if (data <= subRoot->data) // <= allows for duplicates.
-      insertAux(subRoot->pLeft, data);
    else if (data > subRoot->data)
       insertAux(subRoot->pRight, data);
+   else // <= allows for duplicates.
+      insertAux(subRoot->pLeft, data);
 }
 
 /*******************************************
@@ -229,7 +230,7 @@ void BST<T> :: remove(BSTIterator<T> & it)
          xSucc = xSucc->pLeft;
       }
 
-      // Move contents of xSucc to x and change x to point to succesor.
+      // Move contents of xSucc to x and change x to point to successor.
       // Successor will be removed.
       x->data = xSucc->data;
       x = xSucc;
@@ -286,17 +287,17 @@ void BST<T> :: search(const T & t, bool & found, BinaryNode<T> *& locptr,
 template <class T>
 BSTIterator<T> BST<T> :: find(const T & t) const
 {
-  BinaryNode<T>* tmp = pRoot;
+  BinaryNode<T> * tmp = pRoot;
     while (tmp != NULL)
     {
       if(tmp->data == t)
-        break;
+        return BSTIterator<T>(tmp);
       if(t > tmp->data)
         tmp = tmp->pRight;
       else
         tmp = tmp->pLeft;
     }
-  return BSTIterator<T> (tmp);
+  return BSTIterator<T>(0);
 }
 
 /*******************************************
