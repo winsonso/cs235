@@ -80,6 +80,9 @@ private:
    // auxiliary function used for searching the tree for an item.
    void search(const T & t, bool & found, BinaryNode<T> *& locptr,
                BinaryNode<T> *& parent) const;
+
+   // Private helper method for copying a BST
+   BinaryNode<T> *copy(BinaryNode<T> *p);
 };
 
 /*******************************************
@@ -140,10 +143,31 @@ inline BST<T> :: BST(const BST<T> & rhs) : pRoot(0)
    if (rhs.pRoot == 0)
       return;
 
-   for (BSTIterator<T> it = rhs.begin(); it != rhs.end(); ++it) {
-      T data = *it;
-      insert(data);
+   this->pRoot = copy(rhs.pRoot);
+}
+
+/*******************************************
+ * BST COPY
+ * Private helper method for copying a BST
+ ******************************************/
+template <class T>
+BinaryNode<T> * BST<T> :: copy(BinaryNode<T> * pToCopy)
+{
+   BinaryNode<T> *pNode;
+   try
+   {
+      pNode = new BinaryNode<T>(pToCopy->data);
    }
+   catch(std::bad_alloc)
+   {
+      throw "ERROR: Unable to allocate a node";
+   }
+
+   if (pToCopy->pLeft != 0)
+      pNode->pLeft = copy(pToCopy->pLeft);
+   if (pToCopy->pRight != 0)
+      pNode->pRight = copy(pToCopy->pRight);
+   return pNode;
 }
 
 /*******************************************
@@ -160,10 +184,7 @@ BST<T> & BST<T> :: operator = (const BST<T> & rhs)
       return *this;
    }
 
-   for (BSTIterator<T> it = rhs.begin(); it != rhs.end(); ++it) {
-      T data = *it;
-      this->insert(data);
-   }
+   this->pRoot = copy(rhs.pRoot);
 
    return *this;
 }
