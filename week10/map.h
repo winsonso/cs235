@@ -120,14 +120,10 @@ public:
    }
 
    // dereference operator
-  //  Pair<K, V> &operator*()
-  //  {
-  //     return *it;
-  //  }
-  V operator * ()
-  {
+   V &operator*()
+   {
      return (*it).second;
-  }
+   }
 
    // prefix increment
    MapIterator &operator++()
