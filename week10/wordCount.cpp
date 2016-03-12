@@ -8,11 +8,15 @@
  *    This program will implement the wordCount() function
  ************************************************************************/
 
+#include <iostream>
 #include <fstream>
 #include "map.h"       // for MAP
 #include "wordCount.h" // for wordCount() prototype
+
 using namespace std;
-//void readFile(Map <string, Count> & counts, const string & fileName);
+
+// reads the file.
+bool readFile(string &filename, Map<string, int> &map);
 
 /*****************************************************
  * WORD COUNT
@@ -21,40 +25,63 @@ using namespace std;
  *****************************************************/
 void wordCount()
 {
-  Map<int, string> count;
-  string fileName;
-  cout<< "What is the filename to be counted? ";
-  cin>> fileName;
+   Map<string, int> wordMap;
+   string fileName;
+   cout << "What is the filename to be counted? ";
+   cin >> fileName;
 
- // Read the file
-  ifstream fin;
-  fin.open(fileName.c_str());
+   assert(readFile(fileName, wordMap));
 
-  string str;
-  int i = 0;
-  while(fin >> str)
-  {
-     count[i] = str;
-     i++;
-  }
- // Close the file
-  fin.close();
-
-   cout << "What word whose frequency is to be found. Type ! when done";
    string input;
-   MapIterator<int, string> it;
-   cout<< endl << "> ";
-   cin >> input;
-  while(input != "!")
-  {
-     cout << "\t" << input << " : ";
-     int frequency = 0;
-     for(it = count.begin(); it!=count.end(); it++)
-     {
-        if(*it == input)
-           frequency++;
-     }
-     cout << frequency << endl << "> ";
-     cin >> input;
- }
+   cout << "What word whose frequency is to be found. Type ! when done\n";
+
+   // Read the file
+   while (input != "!")
+   {
+      cout << "> ";
+      cin >> input;
+
+      if (input != "!")
+      {
+         cout << "\t" << input << " : ";
+         cout << wordMap[input] << endl;
+      }
+   }
+}
+
+/*******************************************
+ * READ FILE
+ * Reads a given file and puts the words and
+ * their frequencies into the given map.
+ *******************************************/
+bool readFile(string &filename, Map<string, int> &map)
+{
+   assert(filename != "");
+
+   // Read the file
+   ifstream fin(filename.c_str());
+
+   if (fin.fail())
+   {
+      cout << "Error reading file.\n";
+      fin.close();
+      return false;
+   }
+
+   // Iterate through the moves in the file.
+   string word;
+   while (!fin.eof() && fin >> word)
+   {
+      if (fin.fail())
+      {
+         cout << "Error during file read.\n";
+         fin.close();
+         return false;
+      }
+
+      map[word]++;
+   }
+
+   fin.close();
+   return true;
 }
