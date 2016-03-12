@@ -33,7 +33,7 @@ void testBalance();
 #define TEST2   // for testAdd()
 #define TEST3   // for testIterate()
 #define TEST4   // for testQuery()
-//#define TESTB   // for testBalance()
+#define TESTB   // for testBalance()
 
 /**********************************************************************
  * MAIN

@@ -1,11 +1,21 @@
 ###############################################################
 # Program:
 #     Week 10, Map
-#     Brother XXXXX, CS265
+#     Brother Helfrich, CS235
 # Author:
-#     <your name here>
+#     Justin Waite & Winson So
 # Summary:
-#     <put a description here>
+#     This assignment builds and incorporates a map to count
+#     the words in a given text document. A map is a set of
+#     key-value pairs implemented with a BST.
+# Time:
+#     8 hours was spent on the assignment, most of which was
+#     creating the Map class and attempting the Red-Black
+#     tree business. We only got to pass Case #3 in the
+#     balancing tests. Only about 20 minutes was actually
+#     spent on the wordCount.cpp. Maps are easy, Red-Black
+#     trees are difficult. With more time we probably could
+#     have figured them out.
 ###############################################################
 
 ##############################################################

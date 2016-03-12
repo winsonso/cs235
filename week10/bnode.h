@@ -17,6 +17,7 @@
 #define BTREE_H
 
 #include <iostream>
+#include <cassert>
 
 using namespace std;
 
@@ -30,15 +31,18 @@ template<class T>
 class BinaryNode
 {
 public:
-   BinaryNode() : pRight(NULL), pLeft(NULL), pParent(NULL) { }
+   BinaryNode() : pRight(NULL), pLeft(NULL), pParent(NULL), isRed(true),
+                  isBlack(false) { }
 
    BinaryNode(const T &data) : data(data), pRight(NULL), pLeft(NULL),
-                               pParent(NULL) { }
+                               isRed(true), isBlack(false), pParent(NULL) { }
 
    T data;
    BinaryNode<T> *pLeft;
    BinaryNode<T> *pRight;
    BinaryNode<T> *pParent;
+   bool isRed;
+   bool isBlack;
 
    BinaryNode<T> *addLeft(const T &t) throw(const char *);
 
@@ -47,6 +51,12 @@ public:
    BinaryNode<T> *addLeft(BinaryNode<T> *rhs);
 
    BinaryNode<T> *addRight(BinaryNode<T> *rhs);
+
+   int findDepth() const;
+
+   void verifyRedBlack(int depth) const;
+
+   void verifyBTree() const;
 
 private:
    BinaryNode<T> *allocateNode(const T &t) throw(const char *);
@@ -146,80 +156,80 @@ void deleteBinaryTree(BinaryNode<T> *rhs)
  * Find the depth of the black nodes. This is useful for
  * verifying that a given red-black tree is valid
  ****************************************************/
-// template <class T>
-// int BinaryNode <T> :: findDepth() const
-// {
-//    // if there are no children, the depth is ourselves
-//    if (pRight == NULL && pLeft == NULL)
-//       return (isRed ? 0 : 1);
-//
-//    // if there is a right child, go that way
-//    if (pRight != NULL)
-//       return (isRed ? 0 : 1) + pRight->findDepth();
-//    else
-//       return (isRed ? 0 : 1) + pLeft->findDepth();
-// }
-//
-// /****************************************************
-//  * BINARY NODE :: VERIFY RED BLACK
-//  * Do all four red-black rules work here?
-//  ***************************************************/
-// template <class T>
-// void BinaryNode <T> :: verifyRedBlack(int depth) const
-// {
-//    depth -= (isRed == false) ? 1 : 0;
-//
-//    // Rule a) Every node is either red or black
-//    assert(isRed == true || isRed == false); // this feels silly
-//
-//    // Rule b) The root is black
-//    if (pParent == NULL)
-//       assert(isRed == false);
-//
-//    // Rule c) Red nodes have black children
-//    if (isRed == true)
-//    {
-//       if (pLeft != NULL)
-//          assert(pLeft->isRed == false);
-//       if (pRight != NULL)
-//          assert(pRight->isRed == false);
-//    }
-//
-//    // Rule d) Every path from a leaf to the root has the same # of black nodes
-//    if (pLeft == NULL && pRight && NULL)
-//       assert(depth == 0);
-//    if (pLeft != NULL)
-//       pLeft->verifyRedBlack(depth);
-//    if (pRight != NULL)
-//       pRight->verifyRedBlack(depth);
-// }
-//
-// /******************************************************
-//  * VERIFY B TREE
-//  * Verify that the tree is correctly formed
-//  ******************************************************/
-// template <class T>
-// void BinaryNode <T> :: verifyBTree() const
-// {
-//    // check parent
-//    if (pParent)
-//       assert(pParent->pLeft == this || pParent->pRight == this);
-//
-//    // check left
-//    if (pLeft)
-//    {
-//       assert(pLeft->data <= data);
-//       assert(pLeft->pParent == this);
-//       pLeft->verifyBTree();
-//    }
-//
-//    // check right
-//    if (pRight)
-//    {
-//       assert(pRight->data >= data);
-//       assert(pRight->pParent == this);
-//       pRight->verifyBTree();
-//    }
-// }
+template<class T>
+int BinaryNode<T>::findDepth() const
+{
+   // if there are no children, the depth is ourselves
+   if (pRight == NULL && pLeft == NULL)
+      return (isRed ? 0 : 1);
+
+   // if there is a right child, go that way
+   if (pRight != NULL)
+      return (isRed ? 0 : 1) + pRight->findDepth();
+   else
+      return (isRed ? 0 : 1) + pLeft->findDepth();
+}
+
+/****************************************************
+ * BINARY NODE :: VERIFY RED BLACK
+ * Do all four red-black rules work here?
+ ***************************************************/
+template<class T>
+void BinaryNode<T>::verifyRedBlack(int depth) const
+{
+   depth -= (!isRed) ? 1 : 0;
+
+   // Rule a) Every node is either red or black
+   assert(isRed || !isRed); // this feels silly
+
+   // Rule b) The root is black
+   if (pParent == NULL)
+      assert(!isRed);
+
+   // Rule c) Red nodes have black children
+   if (isRed)
+   {
+      if (pLeft != NULL)
+         assert(!pLeft->isRed);
+      if (pRight != NULL)
+         assert(!pRight->isRed);
+   }
+
+   // Rule d) Every path from a leaf to the root has the same # of black nodes
+   if (pLeft == NULL && pRight && NULL)
+      assert(depth == 0);
+   if (pLeft != NULL)
+      pLeft->verifyRedBlack(depth);
+   if (pRight != NULL)
+      pRight->verifyRedBlack(depth);
+}
+
+/******************************************************
+ * VERIFY B TREE
+ * Verify that the tree is correctly formed
+ ******************************************************/
+template<class T>
+void BinaryNode<T>::verifyBTree() const
+{
+   // check parent
+   if (pParent)
+      assert(pParent->pLeft == this || pParent->pRight == this);
+
+   // check left
+   if (pLeft)
+   {
+      assert(pLeft->data <= data);
+      assert(pLeft->pParent == this);
+      pLeft->verifyBTree();
+   }
+
+   // check right
+   if (pRight)
+   {
+      assert(pRight->data >= data);
+      assert(pRight->pParent == this);
+      pRight->verifyBTree();
+   }
+}
 
 #endif // BST_H

@@ -14,9 +14,12 @@
 
 #include "bnode.h"
 #include "stack.h"
+#include <iostream>
+
+using namespace std;
 
 // stub definition for BSTIterator
-template <class T>
+template<class T>
 class BSTIterator;
 
 /*******************************************
@@ -25,27 +28,27 @@ class BSTIterator;
  * which allows for simple searching since
  * an order is kept.
  ******************************************/
-template <class T>
+template<class T>
 class BST
 {
 public:
    // default constructor
-   BST() : pRoot(0) {}
+   BST() : pRoot(0) { }
 
    // copy constructor
-   BST(const BST & rhs) throw (const char *);
+   BST(const BST &rhs) throw(const char *);
 
    // destructor
    ~BST() { deleteBinaryTree(pRoot); }
 
    // assignment operator
-   BST<T> & operator = (const BST<T> & rhs) throw (const char *);
+   BST<T> &operator=(const BST<T> &rhs) throw(const char *);
 
    // checks to see if the tree is empty.
    bool empty() const { return pRoot == 0; }
 
    // inserts an item into the tree in the proper spot.
-   void insert(const T & data) throw (const char *);
+   void insert(const T &data) throw(const char *);
 
    // deletes all the elements in the binary tree.
    void clear()
@@ -55,10 +58,10 @@ public:
    }
 
    // removes an item at the given iterator.
-   void remove(BSTIterator<T> & it);
+   void remove(BSTIterator<T> &it);
 
    // finds an element in the binary tree.
-   BSTIterator<T> find(const T & t) const;
+   BSTIterator<T> find(const T &t) const;
 
    // an iterator referring to the leftmost element in the BST.
    BSTIterator<T> begin() const;
@@ -72,25 +75,29 @@ public:
    // an null iterator
    BSTIterator<T> rend() const { return BSTIterator<T>(0); }
 
+   // returns the root node
+   BinaryNode<T> *&getRoot() { return pRoot; }
+
 private:
-   BinaryNode<T> * pRoot;
+   BinaryNode<T> *pRoot;
 
    // auxiliary recursive function used for insert.
-   void insertAux(BinaryNode<T> *& subRoot, const T & data) throw (const char*);
+   void insertAux(BinaryNode<T> *&parent, BinaryNode<T> *&subRoot,
+                  const T &data) throw(const char*);
 
    // auxiliary function used for searching the tree for an item.
-   void search(const T & t, bool & found, BinaryNode<T> *& locptr,
-               BinaryNode<T> *& parent) const;
+   void search(const T &t, bool &found, BinaryNode<T> *&locptr,
+               BinaryNode<T> *&parent) const;
 
    // Private helper method for copying a BST
-   BinaryNode<T> *copy(BinaryNode<T> *p) throw (const char *);
+   BinaryNode<T> *copy(BinaryNode<T> *p) throw(const char *);
 };
 
 /*******************************************
  * CLASS BSTIterator
  * An iterator for the BST class.
  ******************************************/
-template <class T>
+template<class T>
 class BSTIterator
 {
 public:
@@ -98,37 +105,37 @@ public:
    BSTIterator() { nodes.push(0); }
 
    // non-default taking a binary node pointer
-   BSTIterator(BinaryNode<T> * p);
+   BSTIterator(BinaryNode<T> *p);
 
    // non-default taking a stack
-   BSTIterator(Stack<BinaryNode<T> *> nodes) : nodes(nodes) {}
+   BSTIterator(Stack<BinaryNode<T> *> nodes) : nodes(nodes) { }
 
    // copy constructor
-   BSTIterator(const BSTIterator & rhs) : nodes(rhs.nodes) {}
+   BSTIterator(const BSTIterator &rhs) : nodes(rhs.nodes) { }
 
    // assignment operator
-   BSTIterator & operator = (const BSTIterator & rhs);
+   BSTIterator &operator=(const BSTIterator &rhs);
 
    // double-equals operator
-   bool operator == (const BSTIterator & rhs) const;
+   bool operator==(const BSTIterator &rhs) const;
 
    // not-equals operator
-   bool operator != (const BSTIterator & rhs) const { return !(*this == rhs); }
+   bool operator!=(const BSTIterator &rhs) const { return !(*this == rhs); }
 
    // dereference operator, const by reference
-   T & operator * ();
+   T &operator*();
 
    // increment postfix operator
-   BSTIterator operator ++ (int postfix);
+   BSTIterator operator++(int postfix);
 
    // increment prefix operator
-   BSTIterator & operator ++ ();
+   BSTIterator &operator++();
 
    // decrement postfix operator
-   BSTIterator operator -- (int postfix);
+   BSTIterator operator--(int postfix);
 
    // decrement prefix operator
-   BSTIterator & operator -- ();
+   BSTIterator &operator--();
 
 private:
    Stack<BinaryNode<T> *> nodes;
@@ -138,8 +145,8 @@ private:
  * BST COPY CONSTRUCTOR
  * Copy constructor for the BST class.
  ******************************************/
-template <class T>
-inline BST<T> :: BST(const BST<T> & rhs) throw (const char *) : pRoot(0)
+template<class T>
+inline BST<T>::BST(const BST<T> &rhs) throw(const char *) : pRoot(0)
 {
    if (rhs.pRoot == 0)
       return;
@@ -148,7 +155,7 @@ inline BST<T> :: BST(const BST<T> & rhs) throw (const char *) : pRoot(0)
    {
       this->pRoot = copy(rhs.pRoot);
    }
-   catch (const char * err)
+   catch (const char *err)
    {
       throw;
    }
@@ -158,15 +165,15 @@ inline BST<T> :: BST(const BST<T> & rhs) throw (const char *) : pRoot(0)
  * BST COPY
  * Private helper method for copying a BST
  ******************************************/
-template <class T>
-BinaryNode<T> * BST<T> :: copy(BinaryNode<T> * pToCopy) throw (const char *)
+template<class T>
+BinaryNode<T> *BST<T>::copy(BinaryNode<T> *pToCopy) throw(const char *)
 {
    BinaryNode<T> *pNode;
    try
    {
       pNode = new BinaryNode<T>(pToCopy->data);
    }
-   catch(std::bad_alloc)
+   catch (std::bad_alloc)
    {
       throw "ERROR: Unable to allocate a node";
    }
@@ -183,8 +190,8 @@ BinaryNode<T> * BST<T> :: copy(BinaryNode<T> * pToCopy) throw (const char *)
  * Assignment operator overload for the BST
  * class.
  ******************************************/
-template <class T>
-BST<T> & BST<T> :: operator = (const BST<T> & rhs) throw (const char *)
+template<class T>
+BST<T> &BST<T>::operator=(const BST<T> &rhs) throw(const char *)
 {
    if (rhs.pRoot == 0 || this->pRoot != 0)
    {
@@ -196,7 +203,7 @@ BST<T> & BST<T> :: operator = (const BST<T> & rhs) throw (const char *)
    {
       this->pRoot = copy(rhs.pRoot);
    }
-   catch (const char * err)
+   catch (const char *err)
    {
       throw;
    }
@@ -209,47 +216,85 @@ BST<T> & BST<T> :: operator = (const BST<T> & rhs) throw (const char *)
  * Calls the insertAux function to INSERT
  * the data into the binary tree recursively.
  ******************************************/
-template <class T>
-void BST<T> :: insert(const T & data) throw (const char *)
+template<class T>
+void BST<T>::insert(const T &data) throw(const char *)
 {
-   insertAux(pRoot, data);
+   insertAux(pRoot, pRoot, data);
 }
 
 /*******************************************
  * BST INSERT AUX
  * Traverses the tree to find where to insert
  * the data. Inserts the data in that spot.
+ * The beginnings of Red-Black tree balancing
+ * is included in this function.
  ******************************************/
-template <class T>
-void BST<T> :: insertAux(BinaryNode<T> *& subRoot, const T & data)
-throw (const char *)
+template<class T>
+void BST<T>::insertAux(BinaryNode<T> *&parent, BinaryNode<T> *&subRoot,
+                       const T &data) throw(const char *)
 {
    if (subRoot == 0)
    {
       try
       {
          subRoot = new BinaryNode<T>(data);
+
+         // black if this is the root.
+         if (parent == 0 || parent == subRoot)
+         {
+            subRoot->isRed = false;
+            subRoot->isBlack = true;
+         }
+         else
+            subRoot->pParent = parent;
       }
-      catch(std::bad_alloc)
+      catch (std::bad_alloc)
       {
          throw "ERROR: Unable to allocate a node";
       }
    }
-   else if (data > subRoot->data)
-      insertAux(subRoot->pRight, data);
-   else // <= allows for duplicates.
-      insertAux(subRoot->pLeft, data);
+   else
+   {
+      // split up any 4-node trees along the way.
+      if (subRoot->pRight && subRoot->pRight->isRed &&
+          subRoot->pLeft && subRoot->pLeft->isRed)
+      {
+         // change both links of subRoot to black.
+         subRoot->pRight->isRed = false;
+         subRoot->pRight->isBlack = true;
+         subRoot->pLeft->isRed = false;
+         subRoot->pLeft->isBlack = true;
+
+         // change link from the parent to red.
+         if (subRoot->pParent != 0)
+         {
+            subRoot->isRed = true;
+            subRoot->isBlack = false;
+         }
+
+         // if there are two consecutive red links
+         if (subRoot->isRed && subRoot->pParent->isRed)
+         {
+
+         }
+      }
+
+      if (data > subRoot->data)
+         insertAux(subRoot, subRoot->pRight, data);
+      else // <= allows for duplicates.
+         insertAux(subRoot, subRoot->pLeft, data);
+   }
 }
 
 /*******************************************
  * BST REMOVE
  * Removes a node at the given iterator
  ******************************************/
-template <class T>
-void BST<T> :: remove(BSTIterator<T> & it)
+template<class T>
+void BST<T>::remove(BSTIterator<T> &it)
 {
    bool found;
-   BinaryNode<T> * locptr, * parent;
+   BinaryNode<T> *locptr, *parent;
    search(*it, found, locptr, parent);
    if (!found)
       return;
@@ -258,7 +303,7 @@ void BST<T> :: remove(BSTIterator<T> & it)
    if (locptr->pLeft != 0 && locptr->pRight != 0)
    {
       //find the inorder successor
-      BinaryNode<T> * xSucc = locptr->pRight;
+      BinaryNode<T> *xSucc = locptr->pRight;
       parent = locptr;
       while (xSucc->pLeft != 0)
       {
@@ -273,7 +318,7 @@ void BST<T> :: remove(BSTIterator<T> & it)
    }
 
    // If the node has 0 or 1 children
-   BinaryNode<T> * subtree = locptr->pLeft;
+   BinaryNode<T> *subtree = locptr->pLeft;
    if (subtree == 0)
       subtree = locptr->pRight;
    if (parent == 0)
@@ -290,9 +335,9 @@ void BST<T> :: remove(BSTIterator<T> & it)
  * A private function used for searching there
  * tree for a given item.
  ******************************************/
-template <class T>
-void BST<T> :: search(const T & t, bool & found, BinaryNode<T> *& locptr,
-                      BinaryNode<T> *& parent) const
+template<class T>
+void BST<T>::search(const T &t, bool &found, BinaryNode<T> *&locptr,
+                    BinaryNode<T> *&parent) const
 {
    locptr = pRoot;
    parent = 0;
@@ -320,15 +365,15 @@ void BST<T> :: search(const T & t, bool & found, BinaryNode<T> *& locptr,
  * If the item is greater than the root then
  * go to the right, if not go to the left.
  *******************************************/
-template <class T>
-BSTIterator<T> BST<T> :: find(const T & t) const
+template<class T>
+BSTIterator<T> BST<T>::find(const T &t) const
 {
-   BinaryNode<T> * tmp = pRoot;
+   BinaryNode<T> *tmp = pRoot;
    while (tmp != NULL)
    {
-      if(tmp->data == t)
+      if (tmp->data == t)
          return BSTIterator<T>(tmp);
-      if(t > tmp->data)
+      if (t > tmp->data)
          tmp = tmp->pRight;
       else
          tmp = tmp->pLeft;
@@ -340,15 +385,15 @@ BSTIterator<T> BST<T> :: find(const T & t) const
  * BST BEGIN
  * Returns an iterator for the leftmost node.
  ******************************************/
-template <class T>
-BSTIterator<T> BST<T> :: begin() const
+template<class T>
+BSTIterator<T> BST<T>::begin() const
 {
    if (pRoot == NULL || pRoot->pLeft == NULL)
       return BSTIterator<T>(pRoot);
 
    Stack<BinaryNode<T> *> nodes;
    nodes.push(0);
-   BinaryNode<T> * pSave = pRoot;
+   BinaryNode<T> *pSave = pRoot;
    nodes.push(pRoot);
    while (pSave->pLeft != NULL)
    {
@@ -363,15 +408,15 @@ BSTIterator<T> BST<T> :: begin() const
  * BST RBEGIN
  * Returns an iterator for the leftmost node.
  ******************************************/
-template <class T>
-BSTIterator<T> BST<T> :: rbegin() const
+template<class T>
+BSTIterator<T> BST<T>::rbegin() const
 {
    if (pRoot == NULL || pRoot->pRight == NULL)
       return BSTIterator<T>(pRoot);
 
    Stack<BinaryNode<T> *> nodes;
    nodes.push(0);
-   BinaryNode<T> * pSave = pRoot;
+   BinaryNode<T> *pSave = pRoot;
    nodes.push(pRoot);
    while (pSave->pRight != NULL)
    {
@@ -386,8 +431,8 @@ BSTIterator<T> BST<T> :: rbegin() const
  * BSTIterator NON-DEFAULT CONSTRUCTOR
  * Constructor that takes a bnode pointer
  ******************************************/
-template <class T>
-inline BSTIterator<T> :: BSTIterator(BinaryNode<T> * p)
+template<class T>
+inline BSTIterator<T>::BSTIterator(BinaryNode<T> *p)
 {
    nodes.push(0);
    if (p != 0)
@@ -398,8 +443,8 @@ inline BSTIterator<T> :: BSTIterator(BinaryNode<T> * p)
  * BSTIterator DEREFERENCE OPERATOR
  * Returns the value at the BST
  ******************************************/
-template <class T>
-T & BSTIterator<T> :: operator * ()
+template<class T>
+T &BSTIterator<T>::operator*()
 {
    return nodes.top()->data;
 }
@@ -408,8 +453,8 @@ T & BSTIterator<T> :: operator * ()
  * BSTIterator ASSIGNMENT OPERATOR
  * Returns the value at the BST
  ******************************************/
-template <class T>
-BSTIterator<T> & BSTIterator<T> :: operator = (const BSTIterator & rhs)
+template<class T>
+BSTIterator<T> &BSTIterator<T>::operator=(const BSTIterator &rhs)
 {
    this->nodes = rhs.nodes;
    return *this;
@@ -419,8 +464,8 @@ BSTIterator<T> & BSTIterator<T> :: operator = (const BSTIterator & rhs)
  * BSTIterator COMPARISON OPERATOR
  * Compares the top nodes of two BSTIterators
  ******************************************/
-template <class T>
-bool BSTIterator<T> :: operator == (const BSTIterator & rhs) const
+template<class T>
+bool BSTIterator<T>::operator==(const BSTIterator &rhs) const
 {
    if (this->nodes.empty())
       return rhs.nodes.empty();
@@ -431,8 +476,8 @@ bool BSTIterator<T> :: operator == (const BSTIterator & rhs) const
  * BST ITERATOR :: INCREMENT POSTFIX
  * increment postfix operator
  *************************************************/
-template <class T>
-BSTIterator<T> BSTIterator<T> :: operator ++ (int postfix)
+template<class T>
+BSTIterator<T> BSTIterator<T>::operator++(int postfix)
 {
    BSTIterator<T> tmp(*this);
    ++*this;
@@ -443,8 +488,8 @@ BSTIterator<T> BSTIterator<T> :: operator ++ (int postfix)
  * BST ITERATOR :: INCREMENT PREFIX
  * increment prefix operator
  *************************************************/
-template <class T>
-BSTIterator <T> & BSTIterator <T> :: operator ++ ()
+template<class T>
+BSTIterator<T> &BSTIterator<T>::operator++()
 {
    // do nothing if we have nothing
    if (nodes.top() == NULL)
@@ -463,7 +508,7 @@ BSTIterator <T> & BSTIterator <T> :: operator ++ ()
 
    // there are no right children, the left are done
    assert(nodes.top()->pRight == NULL);
-   BinaryNode <T> * pSave = nodes.top();
+   BinaryNode<T> *pSave = nodes.top();
    nodes.pop();
 
    // if the parent is the NULL, we are done!
@@ -488,8 +533,8 @@ BSTIterator <T> & BSTIterator <T> :: operator ++ ()
  * BST ITERATOR :: DECREMENT POSTFIX
  * decrement postfix operator
  *************************************************/
-template <class T>
-BSTIterator<T> BSTIterator<T> :: operator -- (int postfix)
+template<class T>
+BSTIterator<T> BSTIterator<T>::operator--(int postfix)
 {
    BSTIterator<T> tmp(*this);
    --*this;
@@ -504,8 +549,8 @@ BSTIterator<T> BSTIterator<T> :: operator -- (int postfix)
  * Author:      Br. Helfrich
  * Performance: O(log n) though O(1) in the common case
  *************************************************/
-template <class T>
-BSTIterator <T> & BSTIterator <T> :: operator -- ()
+template<class T>
+BSTIterator<T> &BSTIterator<T>::operator--()
 {
    // do nothing if we have nothing
    if (nodes.top() == NULL)
@@ -524,7 +569,7 @@ BSTIterator <T> & BSTIterator <T> :: operator -- ()
 
    // there are no left children, the right are done
    assert(nodes.top()->pLeft == NULL);
-   BinaryNode <T> * pSave = nodes.top();
+   BinaryNode<T> *pSave = nodes.top();
    nodes.pop();
 
    // if the parent is the NULL, we are done!

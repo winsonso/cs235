@@ -21,9 +21,11 @@ using namespace std;
 template<class K, class V>
 class MapIterator;
 
-/*****************
+/**********************************
  * MAP CLASS
- *****************/
+ * Implements the notion of a set
+ * of key-value pairs in a BST.
+ **********************************/
 template<class K, class V>
 class Map
 {
@@ -122,7 +124,7 @@ public:
    // dereference operator
    V &operator*()
    {
-     return (*it).second;
+      return (*it).second;
    }
 
    // prefix increment
@@ -171,9 +173,11 @@ Map<K, V> &Map<K, V>::operator=(Map &rhs)
    return *this;
 }
 
-/*****************
-* Index operator
-*****************/
+/*******************************************
+ * MAP :: INDEX OPERATOR
+ * Accesses a value at a given key or creates
+ * the pair with a default value.
+ *******************************************/
 template<class K, class V>
 V &Map<K, V>::operator[](const K &key)
 {
