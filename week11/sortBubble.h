@@ -16,21 +16,21 @@
  * Compare two by two, the one is larger then swap it
  * to the left
  ****************************************************/
-template <class T>
+template<class T>
 void sortBubble(T array[], int num)
 {
-  for (int k = 0; k < num - 1; k++)
-  {
-    for (int i = 0; i < num - k - 1; i++)
-    {
-      if(array[i] > array[i+1])
+   for (int k = 0; k < num - 1; k++)
+   {
+      for (int i = 0; i < num - k - 1; i++)
       {
-        T tmp = array[i+1];
-        array[i+1] = array[i];
-        array[i] = tmp;
+         if (array[i] > array[i + 1])
+         {
+            T tmp = array[i + 1];
+            array[i + 1] = array[i];
+            array[i] = tmp;
+         }
       }
-    }
-  }
+   }
 }
 
 

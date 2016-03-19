@@ -3,7 +3,7 @@
  *    Week 11, Sort Insertion
  *    Brother Helfrich, CS 235
  * Author:
- *    Winson So & Justin Waite
+ *    Justin Waite & Winson So
  * Summary:
  *    This program will implement the Insertion Sort
  ************************************************************************/
@@ -17,20 +17,20 @@
  * SORT INSERTION
  * Perform the insertion sort
  ****************************************************/
-template <class T>
+template<class T>
 void sortInsertion(T array[], int num)
 {
-  for (int i = 1; i < num; i++)
-  {
-    T value = array[i];
-    int hole = i;
-    while (hole > 0 && array[hole - 1] > value)
-    {
-      array[hole] = array[hole - 1];
-      hole = hole - 1;
-    }
-    array[hole] = value;
-  }
+   for (int i = 1; i < num; i++)
+   {
+      T value = array[i];
+      int hole = i;
+      while (hole > 0 && array[hole - 1] > value)
+      {
+         array[hole] = array[hole - 1];
+         hole = hole - 1;
+      }
+      array[hole] = value;
+   }
 }
 
 

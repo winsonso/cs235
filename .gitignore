@@ -3,3 +3,4 @@
 *.tar
 *.out
 .idea
+CMakeLists.txt
