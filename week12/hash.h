@@ -1,7 +1,12 @@
-//
-// Created by Justin Waite on 3/26/16.
-//
-
+/***********************************************************************
+ * Header:
+ *    HASH
+ * Author:
+ *    Justin Waite & Winson So
+ * Summary:
+ *    This file contains the class will store a collection of elements
+ *    and be able to perform constant-time insertion and lookup.
+ ************************************************************************/
 #ifndef WEEK12_HASH_H
 #define WEEK12_HASH_H
 
@@ -10,9 +15,10 @@
 
 using namespace std;
 
-/*
+/***********************
+ * HASH CLASS
  * Hash class definition
- */
+ ***********************/
 template<class T>
 class Hash
 {
@@ -49,9 +55,9 @@ private:
    List<T> *data;
 };
 
-/*
- *
- */
+/**************************
+ * NON-DEFAULT CONSTRUCTOR
+ **************************/
 template<class T>
 Hash<T>::Hash(int buckets) throw (const char*) : buckets(buckets), numItems(0)
 {
@@ -65,41 +71,47 @@ Hash<T>::Hash(int buckets) throw (const char*) : buckets(buckets), numItems(0)
    }
 }
 
-/*
+/**************************************************
  * COPY CONSTRUCTOR
  * Constructs a new Hash, copying the given one.
- */
+ **************************************************/
 template<class T>
 Hash<T>::Hash(const Hash<T> &rhs)
 {
-
+  buckets = rhs.buckets;
+  numItems = rhs.numItems;
+  data = rhs.data;
 }
 
-/*
+/********************************
  * ASSIGNMENT OPERATOR
  * Copies one hash into another.
- */
+ ********************************/
 template<class T>
 Hash<T>& Hash<T>::operator=(const Hash<T> &rhs)
 {
-   return *this;
+  buckets = rhs.buckets;
+  numItems = rhs.numItems;
+  data = rhs.data;
+  return *this;
 }
 
-/*
+/*************************************************
  * FIND
  * Returns true if an item is found in the hash,
  * false if it is not.
- */
+ *************************************************/
 template<class T>
 bool Hash<T>::find(const T &item) const
 {
-   return false;
+
+    return false;
 }
 
-/*
+/*************************************************
  * INSERT
  * Inserts a new instance of a value into the hash.
- */
+ *************************************************/
 template<class T>
 void Hash<T>::insert(const T &item)
 {
