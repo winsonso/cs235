@@ -5,7 +5,16 @@
 # Author:
 #     Justin Waite & Winson So
 # Summary:
-#     Implements the Hash class.
+#     This assignment contains the hash class along with
+#     an implementation of the hash using a spellchecker.
+#
+# Time:
+#     We only spent about 4 hours total on this assignment.
+#     The hardest part was researching good hashing algorithms
+#     and doing different trials to see which was most
+#     efficient for our use case. We ended up going with our
+#     own variation of the djb2 hashing algorithm as it
+#     provided the best spread for us.
 ###############################################################
 
 ##############################################################

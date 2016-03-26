@@ -46,15 +46,6 @@ public:
    // virtual hash function to be defined in child class
    virtual int hash(const T &value) const = 0;
 
-   // used to count the empty lists within the data.
-   int getEmptyBuckets() const;
-
-   // used to count the collisions within the data.
-   int getCollisionCount() const;
-
-   // gets biggest bucket size
-   int getBiggestBucket() const;
-
 private:
    int buckets;
    int numItems;
@@ -155,36 +146,6 @@ void Hash<T>::insert(const T &item)
    int index = hash(item);
    data[index].push_front(item);
    numItems++;
-}
-
-template<class T>
-int Hash<T>::getEmptyBuckets() const
-{
-   int total = 0;
-   for (int i = 0; i < buckets; i++)
-      if (data[i].empty())
-         total++;
-   return total;
-}
-
-template<class T>
-int Hash<T>::getCollisionCount() const
-{
-   int total = 0;
-   for (int i = 0; i < buckets; i++)
-      if (!data[i].empty())
-         total += data[i].size() - 1;
-   return total;
-}
-
-template<class T>
-int Hash<T>::getBiggestBucket() const
-{
-   int biggest = 0;
-   for (int i = 0; i < buckets; i++)
-      if (!data[i].empty())
-         biggest = (data[i].size() > biggest) ? data[i].size() : biggest;
-   return biggest;
 }
 
 #endif //WEEK12_HASH_H
