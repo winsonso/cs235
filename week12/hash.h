@@ -36,7 +36,7 @@ public:
    int capacity() const { return buckets; }
 
    // returns true if item is found, false if not.
-   bool find(T &item) const;
+   bool find(const T &item) const;
 
    // inserts an item into the hash
    void insert(const T &item);
@@ -91,7 +91,7 @@ Hash<T>& Hash<T>::operator=(const Hash<T> &rhs)
  * false if it is not.
  */
 template<class T>
-bool Hash<T>::find(T &item) const
+bool Hash<T>::find(const T &item) const
 {
    return false;
 }
@@ -103,7 +103,9 @@ bool Hash<T>::find(T &item) const
 template<class T>
 void Hash<T>::insert(const T &item)
 {
-
+   int index = hash(item);
+   data[index].push_front(item);
+   numItems++;
 }
 
 #endif //WEEK12_HASH_H
