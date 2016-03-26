@@ -104,7 +104,11 @@ Hash<T>& Hash<T>::operator=(const Hash<T> &rhs)
 template<class T>
 bool Hash<T>::find(const T &item) const
 {
-
+  int index = hash(item);
+  for (ListIterator<T> it = data[index].begin();
+     it != data[index].end(); ++it)
+   if (*it == item)
+      return true;
     return false;
 }
 

@@ -40,26 +40,46 @@ public:
 
 void spellCheck()
 {
-  string fileName;
-  SHash hash(101);
-  cout << "What file do you want to check? ";
-  cin >> fileName;
-  // Read the file
-  // Read the file
-  ifstream fin(filename.c_str());
+string fileName;
+SHash hash(101);
+// Input the dictionary into hash table
+ifstream fin("dictionary.txt");
 
-  if (fin.fail())
-  {
-     cout << "Error reading file.\n";
-     fin.close();
-     return false;
-  }
+string dict;
+while(fin >> dict)
+{
+  hash.insert(dict);
+}
+fin.close();
+cout << "\tSize:     " << hash.size()                   << endl;
+cout << "\tCapacity: " << hash.capacity()               << endl;
+cout << "\tEmpty?    " << (hash.empty() ? "Yes" : "No") << endl;
 
-  string word;
-     while(fin >> word)
-     {
-        hash.insert(word);
-     }
-     fin.close();
+// Read the file and check if it is misspelled
+cout << "What file do you want to check? ";
+ cin >> fileName;
+    ifstream check(fileName.c_str());
+    if (check.fail())
+    {
+       cout << "Error reading file.\n";
+       check.close();
+    }
 
+    string missSpell;
+    string word;
+    while(check >> word)
+    {
+      string tmp = word;
+      tmp[0] = tolower(tmp[0]);
+      if(!hash.find(tmp))
+      {
+         if (missSpell.size() != 0)
+            missSpell += ", ";
+            missSpell += word;
+      }
+    }
+   if (missSpell !="")
+      cout << "Misspelled: " << missSpell << endl;
+   else
+      cout << "File contains no spelling errors\n";
 }
