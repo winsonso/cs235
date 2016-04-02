@@ -4,7 +4,7 @@
 *    Brother Helfrich, CS 235
 * Author:
 *    Br. Helfrich
-* Summary: 
+* Summary:
 *    This is a driver program to exercise the Graph class.  When you
 *    submit your program, this should not be changed in any way.  That being
 *    said, you may need to modify this once or twice to get it to work.
@@ -103,13 +103,13 @@ void testSimple()
       // Test 1.c: Copy constructor
       cout << "Create a graph using the copy constructor\n";
       Graph g3(g2);
-      cout << "\tSize: " << g2.size() << endl;
+      cout << "\tSize: " << g3.size() << endl;
 
       // Test 1.d: Assignment operator
       cout << "Copy a graph using the assignment operator\n";
-      Graph g4(20);
+      Graph g4(10);
       g4 = g2;
-      cout << "\tSize: " << g2.size() << endl;
+      cout << "\tSize: " << g4.size() << endl;
    }
    catch (const char * error)
    {
@@ -139,6 +139,7 @@ void testAdd()
       v1.setText(string("A"));
       v2.setText(string("B"));
       g.add(v1, v2);
+      cout << "v1 is "<<v1<<endl;
 
       // B --> C
       cout << "\tB --> C\n";
@@ -173,7 +174,7 @@ void testAdd()
    {
       cout << error << endl;
    }
-#endif // TEST2   
+#endif // TEST2
 }
 
 int CVertex::maxCol = 0;
@@ -199,8 +200,8 @@ void testQuery()
       // need some variables
       CVertex vFrom;
       CVertex vTo;
-   
-      // allow the user to prompt for verticies  
+
+      // allow the user to prompt for verticies
       cout << "Determine if a given edge exists in the graph\n";
       cout << "> ";
       while (cin >> vFrom >> vTo)
@@ -259,7 +260,7 @@ void testFindAll()
 
          for (SetConstIterator <Vertex> it = s.cbegin(); it != s.cend(); ++it)
             cout << '\t' << (vTo = *it) << endl;
-      
+
          cout << "> ";
       }
    }
@@ -269,4 +270,3 @@ void testFindAll()
    }
 #endif // TEST4
 }
-

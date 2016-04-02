@@ -109,7 +109,7 @@ Graph readMaze(const char * fileName)
 void drawMazeRow(const Graph & g, int row, Set <CVertex> & s)
 {
    const char * space = NULL;
-   
+
    CVertex vFrom;
    CVertex vTo;
    assert(g.size() == vFrom.getMaxCol() * vFrom.getMaxRow());
@@ -124,7 +124,7 @@ void drawMazeRow(const Graph & g, int row, Set <CVertex> & s)
       vFrom.set(col, row);
       vTo.set(col - 1, row);
       space = (s.end() == s.find(vTo) ? "  " : "##");
-      
+
       // draw
       if (g.isEdge(vFrom, vTo) || g.isEdge(vTo, vFrom))
          cout << space << ' ';
@@ -168,4 +168,3 @@ void drawMazeColumn(const Graph & g, int row, const Set <CVertex> & s)
    // draw the end of row marker
    cout << endl;
 }
-

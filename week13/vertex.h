@@ -28,24 +28,32 @@ class Vertex
    Vertex() : i(0)          {             }
    Vertex(int index) : i(0) { set(index); }
    Vertex(const Vertex & v) { i = v.i;    }
- 
+
    // set (the validation part)
-   bool set(int index) { if (index >= 0 && index < getMax()) this->i = index; }
+   bool set(int index)
+   {
+     if (index >= 0 && index < getMax())
+     {
+       this->i = index;
+       return true;
+     }
+    return false;
+  }
 
    // handle max
    int getMax() const   { return max;                       }
-   void setMax(int max) { assert(max > 0); this->max = max; }            
-   
+   void setMax(int max) { assert(max > 0); this->max = max; }
+
    // I/O
    friend std::ostream & operator << (std::ostream & out, const Vertex & rhs);
    friend std::istream & operator >> (std::istream & in,        Vertex & rhs);
 
    virtual string getText() const         { return string("ERROR"); }
    virtual bool setText(const string & s) { assert(false);          }
-   
+
    // get a scalar value
    int index() const { return i; }
-   
+
    // operators so we can use with an associative container
    bool operator >  (const Vertex & rhs) const {return index() >  rhs.index();}
    bool operator >= (const Vertex & rhs) const {return index() >= rhs.index();}
@@ -55,7 +63,7 @@ class Vertex
    bool operator != (const Vertex & rhs) const {return index() != rhs.index();}
 
    Vertex & operator = (const Vertex & rhs) { i = rhs.i; return *this; }
-   
+
   protected:
    int i;
    static int max;
@@ -90,7 +98,7 @@ inline std::istream & operator >> (std::istream & in, Vertex & rhs)
 
 
 /****************************************************
- * LETTERS  VERTEX  
+ * LETTERS  VERTEX
  * A vertex that can be one of many single-letter values
  ***************************************************/
 class LVertex : public Vertex
@@ -121,7 +129,7 @@ public:
 #define NUM_CLASS 28
 
 /****************************************************
- * COURSE  VERTEX  
+ * COURSE  VERTEX
  * A vertex that consists of class names
  ***************************************************/
 class CourseVertex : public Vertex
@@ -130,7 +138,7 @@ public:
    CourseVertex()        : Vertex() { max = NUM_CLASS;                }
    CourseVertex(const Vertex & v)   { max = NUM_CLASS; i = v.index(); }
    CourseVertex(int num) : Vertex() { set(num);                       }
-   
+
    // return the text version of the index: 0 --> CS124
    string getText() const          { return nameFromIndex(i);        }
 
@@ -153,11 +161,11 @@ private:
       static string classes[] =
          {
             string("CS124"),   string("CS165"),
-      
+
             string("CS213"),   string("CS235"),   string("CS237"),
             string("CS238"),   string("CS246"),
 
-            string("CS306"),   string("CS308"),   string("CS312"), 
+            string("CS306"),   string("CS308"),   string("CS312"),
             string("CS313"),   string("CS345"),   string("CS361"),
             string("CS364"),   string("CS371"),   string("CS398"),
 
@@ -166,7 +174,7 @@ private:
             string("CS499"),
 
             string("CIT225"),
-            
+
             string("ECEN160"),
             string("ECEN260"),
             string("ECEN324"), string("ECEN361")
@@ -199,10 +207,10 @@ public:
          return true;
       }
       else
-         return false;      
+         return false;
    }
-   
-   
+
+
    // return the text version of the index: (1,3) --> b4
    string getText() const
    {
@@ -215,13 +223,13 @@ public:
       else
       {
          assert((getRow() + 1) / 10 >= 0 && (getRow() + 1) / 10 <= 9);
-         assert((getRow() + 1) % 10 >= 0 && (getRow() + 1) % 10 <= 9);         
+         assert((getRow() + 1) % 10 >= 0 && (getRow() + 1) % 10 <= 9);
          s += (char)((getRow() + 1) / 10 + '0');
          s += (char)((getRow() + 1) % 10 + '0');
       }
       return s;
    }
-   
+
    // set an index based on the text: b4 --> (1,3)
    bool setText(const string & s)
    {

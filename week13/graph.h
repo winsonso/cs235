@@ -38,6 +38,9 @@ public:
    // connecting the first to the second.
    bool isEdge(Vertex &first, Vertex &second) const;
 
+   // Delete all the elements in the graph
+   void clear() { }
+
    // Takes a vertex as a parameter and returns the set of vertices that
    // share an edge with it.
    Set<Vertex> findEdges(Vertex v) const;
@@ -57,6 +60,7 @@ public:
 
 private:
    int numVertices; // holds the number of vertices in the graph
+   List <Vertex> * data;
 };
 
 #endif //WEEK13_GRAPH_H

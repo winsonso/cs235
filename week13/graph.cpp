@@ -11,6 +11,14 @@
  */
 Graph::Graph(int numVertices) throw(const char*) : numVertices(numVertices)
 {
+     try
+   {
+      data = new List<Vertex>[numVertices];
+   }
+   catch (std::bad_alloc)
+   {
+      throw "Unable to allocate array.";
+   }
 
 }
 
@@ -20,6 +28,17 @@ Graph::Graph(int numVertices) throw(const char*) : numVertices(numVertices)
  */
 Graph::Graph(const Graph &rhs) throw (const char*)
 {
+  numVertices = rhs.numVertices;
+  try
+  {
+     data = new List<Vertex>[numVertices];
+    for (int i = 0; i < rhs.numVertices; i++)
+      data[i] = rhs.data[i];
+   }
+  catch (std::bad_alloc)
+  {
+    throw "Unable to allocate array.";
+  }
 
 }
 
@@ -29,6 +48,22 @@ Graph::Graph(const Graph &rhs) throw (const char*)
  */
 Graph &Graph::operator=(const Graph &rhs) throw (const char*)
 {
+    try
+    {
+      data = new List <Vertex>[rhs.numVertices];
+    }
+    catch (std::bad_alloc)
+    {
+      throw "Unable to allocate array.";
+    }
+
+    numVertices = rhs.numVertices;
+    
+    for (int i = 0; i < rhs.numVertices; ++i)
+    {
+      data[i] = rhs.data[i];
+    }  
+
    return *this;
 }
 
@@ -68,7 +103,12 @@ Vector<Vertex> Graph::findPath(Vertex start, Vertex end) const
  */
 void Graph::add(Vertex first, Vertex second)
 {
+  List<Vertex>myList;
+  myList.push_back(first);
+  myList.push_back(second);
 
+  for (ListIterator<Vertex> it = myList.begin(); it != myList.end(); ++it)
+  cout << *it<<endl;
 }
 
 /*
@@ -77,5 +117,13 @@ void Graph::add(Vertex first, Vertex second)
  */
 void Graph::add(Vertex first, Set<Vertex> vertices)
 {
-
+  for (SetIterator<Vertex> it = vertices.begin();
+       it != vertices.end(); ++it)
+       {
+         cout << *it<<endl;
+       }
+    // for (int i= 0;i< vertices.size(); i++)
+    // {
+    //   cout << vertices.getText[i];
+    // }
 }
