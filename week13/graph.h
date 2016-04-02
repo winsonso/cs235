@@ -7,8 +7,8 @@
 
 #include "vertex.h"
 #include "list.h"
-#include "set.h"
-#include "vector.h"
+#include <set>
+#include <vector>
 
 using namespace std;
 
@@ -31,6 +31,9 @@ public:
 
    }
 
+   // clears the graph?
+   void clear() { }
+
    // Returns the number of vertices in the graph
    int size() const { return numVertices; }
 
@@ -38,29 +41,32 @@ public:
    // connecting the first to the second.
    bool isEdge(Vertex &first, Vertex &second) const;
 
-   // Delete all the elements in the graph
-   void clear() { }
-
    // Takes a vertex as a parameter and returns the set of vertices that
    // share an edge with it.
-   Set<Vertex> findEdges(Vertex v) const;
+   set<Vertex> findEdges(Vertex v) const;
 
    // Start and end vertices are passed. Returns a vector of all the
    // vertices on the shortest path between the two.
-   Vector<Vertex> findPath(Vertex start, Vertex end) const;
+   vector<Vertex> findPath(Vertex start, Vertex end) const;
 
    // Takes two vertices to represent a new edge.
-   void add(Vertex first, Vertex second);
+   void add(Vertex &first, Vertex &second);
 
    // Takes a vertex and a set of vertices to create edges.
-   void add(Vertex first, Set<Vertex> vertices);
+   void add(Vertex first, set<Vertex> vertices);
 
    // ASSIGNMENT OPERATOR
    Graph &operator=(const Graph &rhs) throw(const char*);
 
 private:
+   class VertexInfo{
+   public:
+      Vertex v;
+      set<Vertex> adjacencyList;
+   };
+
    int numVertices; // holds the number of vertices in the graph
-   List <Vertex> * data;
+   vector<VertexInfo> vertices;
 };
 
 #endif //WEEK13_GRAPH_H

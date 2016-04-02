@@ -14,12 +14,12 @@
 #include <cassert>
 #include "maze.h"
 #include "vertex.h"
-#include "set.h"
+#include <set>
 #include "graph.h"
 using namespace std;
 
-void drawMazeRow(const Graph & g, int row, Set <CVertex> & s);
-void drawMazeColumn(const Graph & g, int row, const Set <CVertex> & s);
+void drawMazeRow(const Graph & g, int row, set <CVertex> & s);
+void drawMazeColumn(const Graph & g, int row, const set <CVertex> & s);
 
 /******************************************
  * SOLVE MAZE
@@ -28,7 +28,14 @@ void drawMazeColumn(const Graph & g, int row, const Set <CVertex> & s);
  *****************************************/
 void solveMaze()
 {
-   // your code here
+   string filename;
+   cout << "What is the filename? ";
+   cin >> filename;
+   Graph maze(readMaze(filename.c_str()));
+
+   vector<Vertex> path;
+
+   drawMaze(maze, path);
 }
 
 /************************************************
@@ -38,14 +45,14 @@ void solveMaze()
  *    g     - the graph containing the maze
  *    path  - the path from the upper left corner to the lower right
  ***********************************************/
-void drawMaze(const Graph & g, const Vector <Vertex> & path)
+void drawMaze(const Graph & g, const vector <Vertex> & path)
 {
    CVertex v;
 
    // copy everything into a set
-   Set <CVertex> s;
+   set <CVertex> s;
    for (int i = 0; i < path.size(); i++)
-      s.insert((CVertex)path(i));
+      s.insert((CVertex)path[i]);
 
    // draw the top border
    cout << "+  ";
@@ -106,7 +113,7 @@ Graph readMaze(const char * fileName)
  * DRAW MAZE ROW
  * Draw all the horizontal tunnels on a given row
  *********************************************/
-void drawMazeRow(const Graph & g, int row, Set <CVertex> & s)
+void drawMazeRow(const Graph & g, int row, set <CVertex> & s)
 {
    const char * space = NULL;
 
@@ -142,7 +149,7 @@ void drawMazeRow(const Graph & g, int row, Set <CVertex> & s)
  * DRAW MAZE COLUMN
  * Draw all the vertical tunnels on a given row
  *********************************************/
-void drawMazeColumn(const Graph & g, int row, const Set <CVertex> & s)
+void drawMazeColumn(const Graph & g, int row, const set <CVertex> & s)
 {
    CVertex vFrom;
    CVertex vTo;

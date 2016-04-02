@@ -3,6 +3,8 @@
 //
 
 #include "graph.h"
+#include <string>
+#include <queue>
 
 /*
  * NON-DEFAULT CONSTRUCTOR
@@ -11,58 +13,35 @@
  */
 Graph::Graph(int numVertices) throw(const char*) : numVertices(numVertices)
 {
-     try
-   {
-      data = new List<Vertex>[numVertices];
-   }
-   catch (std::bad_alloc)
-   {
-      throw "Unable to allocate array.";
-   }
-
 }
 
 /*
  * COPY CONSTRUCTOR
  * Constructs a graph by copying another
  */
-Graph::Graph(const Graph &rhs) throw (const char*)
+Graph::Graph(const Graph &rhs) throw(const char*) : numVertices(rhs.numVertices)
 {
-  numVertices = rhs.numVertices;
-  try
-  {
-     data = new List<Vertex>[numVertices];
-    for (int i = 0; i < rhs.numVertices; i++)
-      data[i] = rhs.data[i];
+   for (vector<VertexInfo>::const_iterator it = rhs.vertices.begin();
+        it != rhs.vertices.end(); ++it)
+   {
+      vertices.push_back(*it);
    }
-  catch (std::bad_alloc)
-  {
-    throw "Unable to allocate array.";
-  }
-
 }
 
 /*
  * ASSIGNMENT OPERATOR
  * Copies one graph into another
  */
-Graph &Graph::operator=(const Graph &rhs) throw (const char*)
+Graph &Graph::operator=(const Graph &rhs) throw(const char*)
 {
-    try
-    {
-      data = new List <Vertex>[rhs.numVertices];
-    }
-    catch (std::bad_alloc)
-    {
-      throw "Unable to allocate array.";
-    }
+   numVertices = rhs.numVertices;
+   vertices.clear();
 
-    numVertices = rhs.numVertices;
-    
-    for (int i = 0; i < rhs.numVertices; ++i)
-    {
-      data[i] = rhs.data[i];
-    }  
+   for (vector<VertexInfo>::const_iterator it = rhs.vertices.begin();
+        it != rhs.vertices.end(); ++it)
+   {
+      vertices.push_back(*it);
+   }
 
    return *this;
 }
@@ -74,6 +53,19 @@ Graph &Graph::operator=(const Graph &rhs) throw (const char*)
  */
 bool Graph::isEdge(Vertex &first, Vertex &second) const
 {
+   for (vector<VertexInfo>::const_iterator it = vertices.begin();
+        it != vertices.end(); ++it)
+   {
+      if ((*it).v == first)
+      {
+         for (set<Vertex>::iterator vit = (*it).adjacencyList.begin();
+               vit != (*it).adjacencyList.end(); ++vit)
+         {
+            if ((*vit) == second)
+               return true;
+         }
+      }
+   }
    return false;
 }
 
@@ -82,9 +74,18 @@ bool Graph::isEdge(Vertex &first, Vertex &second) const
  * Takes a vertex as a parameter and returns the set of vertices that
  * share an edge with it.
  */
-Set<Vertex> Graph::findEdges(Vertex v) const
+set<Vertex> Graph::findEdges(Vertex v) const
 {
-   return Set<Vertex>();
+   set<Vertex> vSet;
+   for (vector<VertexInfo>::const_iterator it = vertices.begin();
+        it != vertices.end(); ++it)
+   {
+      if ((*it).v == v)
+      {
+         vSet = (*it).adjacencyList;
+      }
+   }
+   return vSet;
 }
 
 /*
@@ -92,38 +93,84 @@ Set<Vertex> Graph::findEdges(Vertex v) const
  * Start and end vertices are passed. Returns a vector of all the
  * vertices on the shortest path between the two.
  */
-Vector<Vertex> Graph::findPath(Vertex start, Vertex end) const
+vector<Vertex> Graph::findPath(Vertex start, Vertex end) const
 {
-   return Vector<Vertex>();
+   int distance = 0;
+   queue<Vertex> vQueue;
+   vQueue.push(start);
+
+   set<Vertex> visited;
+   visited.insert(start);
+
+   bool foundEnd = false;
+   while (!foundEnd && !vQueue.empty())
+   {
+      Vertex v = vQueue.front();
+      vQueue.pop();
+      if (v.index() > distance)
+         distance++;
+      set<Vertex> adjacents = findEdges(v);
+      for (set<Vertex>::iterator it = adjacents.begin(); it != adjacents.end();
+            ++it)
+      {
+         if (visited.find(*it) != visited.end())
+         {
+
+         }
+      }
+   }
+
+   return vector<Vertex>();
 }
 
 /*
  * ADD
  * Takes two vertices to represent a new edge.
  */
-void Graph::add(Vertex first, Vertex second)
+void Graph::add(Vertex &first, Vertex &second)
 {
-  List<Vertex>myList;
-  myList.push_back(first);
-  myList.push_back(second);
+   VertexInfo vi;
+   for (vector<VertexInfo>::iterator it = vertices.begin();
+        it != vertices.end(); ++it)
+   {
+      if ((*it).v == first)
+      {
+         (*it).adjacencyList.insert(second);
+         return;
+      }
+   }
 
-  for (ListIterator<Vertex> it = myList.begin(); it != myList.end(); ++it)
-  cout << *it<<endl;
+   vi.v = first;
+   vi.adjacencyList.insert(second);
+   vertices.push_back(vi);
 }
 
 /*
  * ADD
  * Takes a vertex and a set of vertices to create edges.
  */
-void Graph::add(Vertex first, Set<Vertex> vertices)
+void Graph::add(Vertex first, set<Vertex> vertices)
 {
-  for (SetIterator<Vertex> it = vertices.begin();
-       it != vertices.end(); ++it)
-       {
-         cout << *it<<endl;
-       }
-    // for (int i= 0;i< vertices.size(); i++)
-    // {
-    //   cout << vertices.getText[i];
-    // }
+   for (vector<VertexInfo>::iterator it = this->vertices.begin();
+        it != this->vertices.end(); ++it)
+   {
+      if ((*it).v == first)
+      {
+         for (set<Vertex>::iterator verticesIt = vertices.begin();
+              verticesIt != vertices.end(); ++verticesIt)
+         {
+            (*it).adjacencyList.insert(*verticesIt);
+         }
+         return;
+      }
+   }
+
+   VertexInfo vi;
+   vi.v = first;
+   for (set<Vertex>::iterator verticesIt = vertices.begin();
+        verticesIt != vertices.end(); ++verticesIt)
+   {
+      vi.adjacencyList.insert(*verticesIt);
+   }
+   this->vertices.push_back(vi);
 }

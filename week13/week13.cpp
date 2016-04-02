@@ -90,14 +90,26 @@ void testSimple()
 #ifdef TEST1
    try
    {
-      // Test1: a graph on the stack
+      // Test 1.a: a graph of 10
       cout << "Create a graph of 10 verticies\n";
-      Graph g(10);
-   
-      // Test2: a graph in the heap
+      Graph g1(10);
+      cout << "\tSize: " << g1.size() << endl;
+
+      // Test 1.b: a graph of 20
       cout << "Create a graph of 20 verticies\n";
-      Graph * p = new Graph(20);
-      delete p;
+      Graph g2(20);
+      cout << "\tSize: " << g2.size() << endl;
+
+      // Test 1.c: Copy constructor
+      cout << "Create a graph using the copy constructor\n";
+      Graph g3(g2);
+      cout << "\tSize: " << g2.size() << endl;
+
+      // Test 1.d: Assignment operator
+      cout << "Copy a graph using the assignment operator\n";
+      Graph g4(20);
+      g4 = g2;
+      cout << "\tSize: " << g2.size() << endl;
    }
    catch (const char * error)
    {
@@ -146,7 +158,7 @@ void testAdd()
       //  D --> D
       cout << "\tD --> {A, B, C, D}\n";
       v1.setText(string("D"));
-      Set <Vertex> s;
+      set <Vertex> s;
       v2.setText(string("A"));
       s.insert(v2);
       v2.setText(string("B"));
@@ -177,7 +189,12 @@ void testQuery()
    try
    {
       // read the verticies from a file
-      Graph g(readMaze("/home/cs235/week13/maze5x5.txt"));
+      Graph g1(readMaze("/home/cs235/week13/maze5x5.txt"));
+
+      // copy the graph. Note that we need to ge the size from g1
+      Graph g2(g1.size());
+      g2 = g1;
+      g1.clear();
 
       // need some variables
       CVertex vFrom;
@@ -188,7 +205,7 @@ void testQuery()
       cout << "> ";
       while (cin >> vFrom >> vTo)
          cout << '\t' << vFrom << " - " << vTo
-              << " is " << (g.isEdge(vFrom, vTo) ? "" : "NOT ")
+              << " is " << (g2.isEdge(vFrom, vTo) ? "" : "NOT ")
               << "an edge\n"
               << "> ";
    }
@@ -209,33 +226,40 @@ void testFindAll()
 #ifdef TEST4
    try
    {
-      Graph g(28);
+      Graph g1(28);
       CourseVertex vFrom;
       CourseVertex vTo;
 
-      // read the class dependencies from a file
-      // CS124 CS165 CIT225 ECEN160 |
-      ifstream fin("/home/cs235/week13/cs.txt");
-      assert(fin.good());
-      while (fin >> vFrom)  // read the first vertex, the class
       {
-         while (fin >> vTo) // keep reading until the "|" is encountered
-            g.add(vFrom, vTo);
-         fin.clear();       // clear the error state which came from the "|"
-         fin.ignore();
+         Graph g2(g1.size());
+
+         // read the class dependencies from a file
+         // CS124 CS165 CIT225 ECEN160 |
+         ifstream fin("/home/cs235/week13/cs.txt");
+         assert(fin.good());
+         while (fin >> vFrom)  // read the first vertex, the class
+         {
+            while (fin >> vTo) // keep reading until the "|" is encountered
+               g2.add(vFrom, vTo);
+            fin.clear();       // clear the error state which came from the "|"
+            fin.ignore();
+         }
+         fin.close();
+         g1 = g2;
+         g2.clear();
       }
-      fin.close();
+      // g2 is destroyed
 
       // prompt for the next class
       cout << "For the given class, the prerequisites will be listed:\n";
       cout << "> ";
       while (cin >> vFrom)
       {
-         Set <Vertex> s = g.findEdges(vFrom);
+         set <Vertex> s = g1.findEdges(vFrom);
 
-         for (SetConstIterator <Vertex> it = s.cbegin(); it != s.cend(); ++it)
+         for (set<Vertex>::const_iterator it = s.begin(); it != s.end(); ++it)
             cout << '\t' << (vTo = *it) << endl;
-      
+
          cout << "> ";
       }
    }
